@@ -421,17 +421,6 @@ Imprimir.Coordenadas()
 #Graficar sistema coordenado
 #Graficar.Vectores()
 
-
-
-# # 1. Calcular la potencia consumida por un circuito
-# corriente = float(input("Ingrese el valor de la corriente (en amperios): "))
-# voltaje = float(input("Ingrese el valor del voltaje (en voltios): "))
-
-# potencia = corriente * voltaje
-# print("La potencia consumida por el circuito es:", potencia, "vatios")
-
-
-
 # # Cargar la imagen del logo (reemplaza 'logo.png' con la ruta de tu imagen)
 # image_path = '/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/chevrolet.png'
 # image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
