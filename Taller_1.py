@@ -1,4 +1,7 @@
 import numpy as np
+import math
+import random
+import cv2
 import matplotlib.pyplot as plt
 from scipy import signal
 
@@ -99,7 +102,127 @@ class ResultadoM():
         Resultado_cruz = matriz1.ProductoC(matriz2)
         Resultado_cruz.Imprimir("producto cruz")
 
+class Coordenadas:
+
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+    
+    def a_cilindricas(self):
+        r = math.sqrt(self.x ** 2 + self.y ** 2)
+        theta = math.atan2(self.y, self.x)
+        z_cilindrica = self.z
+        return r, theta, z_cilindrica
+    
+    def a_esfericas(self):
+        r = math.sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
+        theta = math.atan2(self.y, self.x)
+        phi = math.atan2(math.sqrt(self.x ** 2 + self.y ** 2), self.z)
+        return r, theta, phi
+
+class IteracionConsola():
+
+    def Potencia():
+
+        I, V = float(input("Ingrese el valor de la corriente: ")), float(input("Ingrese el valor del voltaje: "))
+
+        P = I * V
+        print(f"La potencia que consume el circuito es: {P} W")
+
+    def Aleatorios():
+
+        x = int(input("Cantidad de numeros a generar\nCantidad: "))
+        min, max = int(input("Rango minímo: ")), int(input("Rango máximo: "))
+
+        for _ in range(x):
+            #print("Números aleatorios generados:")
+            print(f"Número generado: {random.randint(min, max)}")
+
+    def Volumenes():
+
+        r = "s"
+        while r != "n":
+
+            opc = input("Seleccione para calcular el volumen\n1. Prisma\n2. Pirámide\n3. Cono truncado\n4. Cilindro\nSolido: ")
+
+            if opc == "1" or opc == "prisma" or opc == "2" or opc == "piramide":
+                b,a = float(input("Ingrese el valor de la base: ")), float(input("Ingrese el valor de la altura: "))
+
+                if opc == "1" or opc == "prisma" :
+                    v = b * a
+                    print(f"El volumen del solido prisma es: {v:.2f}")
+
+                if opc == "2" or opc == "piramide" :
+                    v = (1/3) * b * a
+                    print(f"El volumen de la pirámide es: {v:.2f}")
+
+            if opc == "3" or opc == "cono truncado" or opc == "4" or opc == "cilindro":
+
+                r, a = float(input("Ingrese el valor del radio: ")), float(input("Ingrese el valor de la altura: "))
+
+                if opc == "3" or opc == "cono truncado" :
+
+                    r2 = float(input("Ingrese el radio menor del cono truncado: "))
+                    v = (math.pi * a / 3) * (r*2 + r2*2 + (r * r2))
+                    print(f"El volumen del cono truncado es: {v:.2f}")
+
+                if opc == "4" or opc == "cilindro":
+
+                    v = math.pi * r**2 * a
+                    print(f"El volumen del cilindro es: {v:.2f}")
+
+            if opc != "1" or opc != "2" or opc == "3" or opc != "4" :
+                if opc != "prisma" or opc != "piramide" or opc == "cono truncado" or opc != "cilindro" :
+
+                    print("\nNo escogiste ningún solido")
+            
+            r = input("\n¿Quieres volver a escoger un solido? (s/n):  ")
+
+            if r != "s" and r != "n":
+
+                while r != "n" and r != "s":
+
+                    r = input("\nla letra ingresada no es (s) o (n): ")
+
+    def Robot():
+
+        r = "s"
+        while r != "n":
+
+            robot = input("Seleccione el robot\n1. Cilíndrico\n2. Cartesiano\n3. Esférico\nRobot: ")
+
+            if robot == "cilindrico" or robot == "1":
+                print("\nRobot cilíndrico\nTiene tres articulaciones")
+            
+            elif robot == "cartesiano" or robot == "2":
+                print("\nRobot cartesiano\nTiene tres articulaciones")
+
+            elif robot == "esferico" or robot == "3":
+                print("\nRobot esférico\nTiene dos articulaciones")
+
+            else:
+                print("No has escogido ningun robot.")
+
+            r = input("\n¿Quiere escoger otro robot? (s/n):  ")
+
+            if r != "s" and r != "n":
+
+                while r != "n" and r != "s":
+
+                    r = input("\nla letra ingresada no es (s) o (n): ")
+                
+    def Continuar():
+
+        c = "s"
+        while c != "n":
+
+            c = input("¿Desea continuar? (s/n): ")
+            if c != "s" and c != "n":
+                print("la letra ingresada no es (s) o (n)")
+
 class Imprimir():
+
     def Matriz():
         matriz1.Imprimir("1")
         matriz2.Imprimir("2")
@@ -117,6 +240,12 @@ class Imprimir():
         ResultadoV.division()
         ResultadoV.punto()
         ResultadoV.cruz()
+
+    def Coordenadas():
+
+        r_cilindrica, theta_cilindrica, z_cilindrica = coordenadas.a_cilindricas()
+        r_esferica, theta_esferica, phi_esferica = coordenadas.a_esfericas()
+        print(f"Coordenadas rectangulares: {(x, y, z)}\nCoordenadas cilíndricas: {(r_cilindrica, theta_cilindrica, z_cilindrica)}\nCoordenadas esféricas: {(r_esferica, theta_esferica, phi_esferica)}")
 
 class Temperatura():
 # Ecuación de la resistencia de una PT100 según la norma IEC 60751
@@ -162,6 +291,18 @@ class FuncionTransferencia():
             plt.show()
             print(tipo_sistema)
 
+class CargaDescarga():
+
+    def carga(voltaje, capacitancia, resistencia, tiempo):
+        tau = resistencia * capacitancia
+        carga = voltaje * (1 - np.exp(-tiempo / tau))
+        return tiempo, carga
+
+    def descarga(voltaje, capacitancia, resistencia, tiempo):
+        tau = resistencia * capacitancia
+        descarga = voltaje * np.exp(-tiempo / tau)
+        return tiempo, descarga
+
 class Graficar():
 
     def Temperatura():
@@ -192,6 +333,55 @@ class Graficar():
             Datos = FuncionTransferencia(numerador, denominador)
             Datos.graficar_respuesta_al_escalon()
 
+    def CargaDescarga():
+
+        def Grafica(voltaje, capacitancia, resistencia, tiempo):
+            tiempo_carga, voltajes_carga = CargaDescarga.carga(voltaje, capacitancia, resistencia, tiempo)
+            tiempo_descarga, voltajes_descarga = CargaDescarga.descarga(voltaje, capacitancia, resistencia, tiempo)
+
+            plt.plot(tiempo_carga, voltajes_carga, label='Carga')
+            plt.plot(tiempo_descarga, voltajes_descarga, label='Descarga')
+            plt.title('Carga y Descarga de un Circuito RC')
+            plt.xlabel('Tiempo (s)')
+            plt.ylabel('Voltaje (V)')
+            plt.grid(True)
+            plt.legend()
+            plt.show()
+
+        voltaje = float(input("Ingrese el voltaje inicial en el capacitor (V): "))
+        capacitancia = float(input("Ingrese el valor de la capacitancia del capacitor (μF): "))
+        resistencia = float(input("Ingrese el valor de la resistencia (Ω): "))
+
+        tiempo = np.linspace(0, 10 * resistencia * capacitancia, 1000)
+
+        # Modifica aquí para que solo haya una llamada a la función
+        Grafica(voltaje, capacitancia, resistencia, tiempo)
+
+    def Vectores():
+
+        def dibujar_vector(x, y, z):
+            fig = plt.figure()
+            ax = fig.add_subplot(111, projection='3d')
+            ax.quiver(0, 0, 0, x, y, z, color='b', label='Vector')
+    
+            # Configurar ejes
+            ax.set_xlabel('X')
+            ax.set_ylabel('Y')
+            ax.set_zlabel('Z')
+            ax.set_xlim([0, max(x, 1)])  # Asegurarse de que los límites mínimos sean 1
+            ax.set_ylim([0, max(y, 1)])
+            ax.set_zlim([0, max(z, 1)])
+            # Mostrar la leyenda
+            ax.legend()
+            plt.show()
+
+        # Solicitar al usuario las coordenadas del vector
+        x = float(input("Ingrese la coordenada X del vector: "))
+        y = float(input("Ingrese la coordenada Y del vector: "))
+        z = float(input("Ingrese la coordenada Z del vector: "))
+
+        # Dibujar el vector en el sistema de coordenadas tridimensional
+        dibujar_vector(x, y, z)
 
 # Vectores previamente inicializados
 vector1 = Vectores(1, 2, 3)
@@ -205,59 +395,83 @@ matriz2 = Matrices([[5, 6], [7, 8]])
 #Imprimiendo valores de matrices
 #Imprimir.Matriz()
 
+# Coordenadas rectangulares (x, y, z)
+x = 3
+y = 4
+z = 5
+coordenadas = Coordenadas(x, y, z)
+
+Imprimir.Coordenadas()
+
+#IteracionConsola.Potencia()
+#IteracionConsola.Aleatorios()
+#IteracionConsola.Volumenes()
+#IteracionConsola.Robot()
+#IteracionConsola.Continuar()
+
 #Graficar sensor PT100 desd -200°C a 200°C
 #Graficar.Temperatura()
 
 #Graficar función de transferencia de sugundo orden
 #Graficar.FuncionTransferencia()
 
+#Graficar carga y descarga de un circuito RC
+#Graficar.CargaDescarga()
 
-def carga_descarga(voltaje, capacitancia, resistencia, tiempo):
-    """
-    Calcula el voltaje a través del tiempo para la carga y descarga de un circuito RC.
+#Graficar sistema coordenado
+#Graficar.Vectores()
 
-    Parámetros:
-    - voltaje: Voltaje inicial en el capacitor (V).
-    - capacitancia: Valor de la capacitancia del capacitor (μF).
-    - resistencia: Valor de la resistencia (Ω).
-    - tiempo: Lista de valores de tiempo para evaluar la función.
 
-    Retorna:
-    - Lista de valores de voltaje a través del tiempo.
-    """
-    tau = resistencia * capacitancia  # Constante de tiempo del circuito RC
-    carga_descarga = voltaje * (1 - np.exp(-tiempo / tau))
-    return carga_descarga
 
-def graficar_carga_descarga(voltaje, capacitancia, resistencia, tiempo):
-    """
-    Grafica la carga y descarga de un circuito RC.
+# # 1. Calcular la potencia consumida por un circuito
+# corriente = float(input("Ingrese el valor de la corriente (en amperios): "))
+# voltaje = float(input("Ingrese el valor del voltaje (en voltios): "))
 
-    Parámetros:
-    - voltaje: Voltaje inicial en el capacitor (V).
-    - capacitancia: Valor de la capacitancia del capacitor (μF).
-    - resistencia: Valor de la resistencia (Ω).
-    - tiempo: Lista de valores de tiempo para evaluar la función.
-    """
-    voltajes = carga_descarga(voltaje, capacitancia, resistencia, tiempo)
+# potencia = corriente * voltaje
+# print("La potencia consumida por el circuito es:", potencia, "vatios")
 
-    plt.plot(tiempo, voltajes)
-    plt.title('Carga y Descarga de un Circuito RC')
-    plt.xlabel('Tiempo (s)')
-    plt.ylabel('Voltaje (V)')
-    plt.grid(True)
-    plt.legend(['Carga y Descarga'])
-    plt.show()
 
-if __name__ == "__main__":
-    # Solicitar al usuario los valores
-    voltaje = float(input("Ingrese el voltaje inicial en el capacitor (V): "))
-    capacitancia = float(input("Ingrese el valor de la capacitancia del capacitor (μF): "))
-    resistencia = float(input("Ingrese el valor de la resistencia (Ω): "))
 
-    # Crear una lista de valores de tiempo
-    tiempo = np.linspace(0, 5 * resistencia * capacitancia, 1000)
+# # Cargar la imagen del logo (reemplaza 'logo.png' con la ruta de tu imagen)
+# image_path = '/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/chevrolet.png'
+# image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
-    # Graficar carga y descarga del circuito RC
-    graficar_carga_descarga(voltaje, capacitancia, resistencia, tiempo)
+# # Aplicar umbralización para resaltar los contornos
+# _, thresholded = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
 
+# # Encontrar contornos en la imagen umbralizada
+# contours, _ = cv2.findContours(thresholded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+# # Dibujar los contornos en la imagen original
+# image_with_contours = cv2.drawContours(image.copy(), contours, -1, (0, 255, 0), 2)
+
+# # Mostrar las imágenes
+# plt.subplot(121), plt.imshow(image, cmap='gray'), plt.title('Imagen Original')
+# plt.subplot(122), plt.imshow(image_with_contours, cmap='gray'), plt.title('Contornos')
+# plt.show()
+
+# Cargar la imagen del logo de Chevrolet
+# logo_chevrolet = cv2.imread('chevrolet.png', cv2.IMREAD_GRAYSCALE)
+
+# # Encontrar los contornos en la imagen del logo de Chevrolet
+# _, contours_chevrolet, _ = cv2.findContours(logo_chevrolet, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+# # Imprimir las coordenadas de los contornos del logo de Chevrolet
+# print("Coordenadas de contornos del logo de Chevrolet:")
+# for contour in contours_chevrolet:
+#     for point in contour:
+#         x, y = point[0]
+#         print(f"X: {x}, Y: {y}")
+
+# # Cargar la imagen del logo de Hyundai
+# # logo_hyundai = cv2.imread('hyundai_logo.jpg', cv2.IMREAD_GRAYSCALE)
+
+# # Encontrar los contornos en la imagen del logo de Hyundai
+# # _, contours_hyundai, _ = cv2.findContours(logo_hyundai, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+# # Imprimir las coordenadas de los contornos del logo de Hyundai
+# # print("\nCoordenadas de contornos del logo de Hyundai:")
+# # for contour in contours_hyundai:
+# #     for point in contour:
+# #         x, y = point[0]
+# #         print(f"X: {x}, Y: {y}")
