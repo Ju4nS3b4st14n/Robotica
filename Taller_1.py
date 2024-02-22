@@ -121,6 +121,23 @@ class Coordenadas:
         phi = math.atan2(math.sqrt(self.x ** 2 + self.y ** 2), self.z)
         return r, theta, phi
 
+class CilindroNeumatico:
+    def __init__(self, diametro, presion):
+        self.diametro = diametro
+        self.presion = presion
+    
+    def calcular_fuerza_avance(self):
+        area_piston = (self.diametro / 2) ** 2 * math.pi
+        fuerza_avance = area_piston * self.presion
+        return fuerza_avance
+    
+    def calcular_fuerza_retroceso(self):
+        area_piston = (self.diametro / 2) ** 2 * math.pi
+        area_vastago = (self.diametro / 4) ** 2 * math.pi  # Área del vástago es la mitad del área del pistón
+        area_efectiva = area_piston - area_vastago
+        fuerza_retroceso = area_efectiva * self.presion
+        return fuerza_retroceso
+
 class IteracionConsola():
 
     def Potencia():
@@ -246,6 +263,76 @@ class Imprimir():
         r_cilindrica, theta_cilindrica, z_cilindrica = coordenadas.a_cilindricas()
         r_esferica, theta_esferica, phi_esferica = coordenadas.a_esfericas()
         print(f"Coordenadas rectangulares: {(x, y, z)}\nCoordenadas cilíndricas: {(r_cilindrica, theta_cilindrica, z_cilindrica)}\nCoordenadas esféricas: {(r_esferica, theta_esferica, phi_esferica)}")
+
+    def RTD():
+
+        def calcular_resistencia(temperatura):
+         # Coeficientes de la ecuación de Callendar-Van Dusen
+            A = 3.9083e-3
+            B = -5.775e-7
+            R0 = 100.0  # Resistencia nominal a 0°C
+    
+            # Cálculo de la resistencia
+            R = R0 * (1 + A * temperatura + B * temperatura**2)
+            return R
+
+        # Temperatura en grados Celsius
+        temperatura = 25.0
+
+        # Calcular la resistencia para la temperatura dada
+        resistencia = calcular_resistencia(temperatura)
+
+        print(f"Para una temperatura de {temperatura}°C, la resistencia es de {resistencia:.2f} ohms.")
+
+    def Rotaciones():
+
+        def rectangular_a_cilindricas(x, y, z):
+            r = math.sqrt(x**2 + y**2)  # Calcula la distancia radial desde el origen al punto en el plano XY
+            theta = math.atan2(y, x)     # Calcula el ángulo en el plano XY (en radianes)
+            z_cilindrica = z             # La coordenada z en el sistema cilíndrico es la misma que en el sistema rectangular
+            return r, theta, z_cilindrica
+
+        # Función para convertir coordenadas rectangulares a coordenadas esféricas
+        def rectangular_a_esfericas(x, y, z):
+            r = math.sqrt(x**2 + y**2 + z**2)  # Calcula la distancia radial desde el origen al punto
+            theta = math.atan2(y, x)           # Calcula el ángulo en el plano XY (en radianes)
+            phi = math.acos(z / r)             # Calcula el ángulo entre el eje z y la línea que conecta el origen con el punto (en radianes)
+            return r, theta, phi
+
+        # Coordenadas rectangulares
+        x = 1
+        y = 1
+        z = 1
+
+        # Convertir coordenadas rectangulares a cilíndricas
+        r_cilindrica, theta_cilindrica, z_cilindrica = rectangular_a_cilindricas(x, y, z)
+
+        # Convertir coordenadas rectangulares a esféricas
+        r_esferica, theta_esferica, phi_esferica = rectangular_a_esfericas(x, y, z)
+
+        print(f"Coordenadas rectangulares (x, y, z): ({x}, {y}, {z})")
+        print(f"Coordenadas cilíndricas (r, theta, z): ({r_cilindrica}, {theta_cilindrica}, {z_cilindrica})")
+        print(f"Coordenadas esféricas (r, theta, phi): ({r_esferica}, {theta_esferica}, {phi_esferica})")
+
+    def Fuerza():
+
+        # Dimensiones físicas del cilindro (en metros)
+        diametro = 0.05  # 50 mm
+
+        # Valor de presión (en Pascals)
+        presion = 500000  # 500 kPa
+
+        # Crear instancia del cilindro con las dimensiones y presión especificadas
+        cilindro = CilindroNeumatico(diametro, presion)
+
+        # Calcular fuerza de avance
+        fuerza_avance = cilindro.calcular_fuerza_avance()
+
+        # Calcular fuerza de retroceso
+        fuerza_retroceso = cilindro.calcular_fuerza_retroceso()
+
+        print(f"Fuerza de avance del cilindro: {fuerza_avance} N")
+        print(f"Fuerza de retroceso del cilindro: {fuerza_retroceso} N")
 
 class Temperatura():
 # Ecuación de la resistencia de una PT100 según la norma IEC 60751
@@ -401,7 +488,11 @@ y = 4
 z = 5
 coordenadas = Coordenadas(x, y, z)
 
-Imprimir.Coordenadas()
+#Imprimir.Coordenadas()
+
+#Imprimir.RTD()
+#Imprimir.Rotaciones()
+#Imprimir.Fuerza()
 
 #IteracionConsola.Potencia()
 #IteracionConsola.Aleatorios()
@@ -438,29 +529,3 @@ Imprimir.Coordenadas()
 # plt.subplot(121), plt.imshow(image, cmap='gray'), plt.title('Imagen Original')
 # plt.subplot(122), plt.imshow(image_with_contours, cmap='gray'), plt.title('Contornos')
 # plt.show()
-
-# Cargar la imagen del logo de Chevrolet
-# logo_chevrolet = cv2.imread('chevrolet.png', cv2.IMREAD_GRAYSCALE)
-
-# # Encontrar los contornos en la imagen del logo de Chevrolet
-# _, contours_chevrolet, _ = cv2.findContours(logo_chevrolet, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-# # Imprimir las coordenadas de los contornos del logo de Chevrolet
-# print("Coordenadas de contornos del logo de Chevrolet:")
-# for contour in contours_chevrolet:
-#     for point in contour:
-#         x, y = point[0]
-#         print(f"X: {x}, Y: {y}")
-
-# # Cargar la imagen del logo de Hyundai
-# # logo_hyundai = cv2.imread('hyundai_logo.jpg', cv2.IMREAD_GRAYSCALE)
-
-# # Encontrar los contornos en la imagen del logo de Hyundai
-# # _, contours_hyundai, _ = cv2.findContours(logo_hyundai, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-# # Imprimir las coordenadas de los contornos del logo de Hyundai
-# # print("\nCoordenadas de contornos del logo de Hyundai:")
-# # for contour in contours_hyundai:
-# #     for point in contour:
-# #         x, y = point[0]
-# #         print(f"X: {x}, Y: {y}")
