@@ -470,6 +470,38 @@ class Graficar():
         # Dibujar el vector en el sistema de coordenadas tridimensional
         dibujar_vector(x, y, z)
 
+    def Imagen():
+
+        imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/chevrolet.png')
+        gray = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+        ret, th = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
+
+        contornos, jerarquia = cv2.findContours(th, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        mostrar_imagen = True
+
+        for i in range(len(contornos)):
+            cv2.drawContours(imagen, contornos, i, (0, 255, 0), 3)
+            print("Contorno", i, "=", len(contornos[i]))
+    
+            cv2.imshow('imagen', imagen)
+    
+            while True:
+                key = cv2.waitKey(1)
+                if key == ord('q'):  # Presiona 'q' para salir del bucle
+                    mostrar_imagen = False
+                    break
+                elif key == ord('n'):  # Presiona 'n' para ir al siguiente contorno
+                    break
+    
+            if not mostrar_imagen:
+                break
+
+        cv2.imshow('th', th)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+
 # Vectores previamente inicializados
 vector1 = Vectores(1, 2, 3)
 vector2 = Vectores(4, 5, 6)
