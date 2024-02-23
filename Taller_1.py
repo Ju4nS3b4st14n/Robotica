@@ -470,9 +470,10 @@ class Graficar():
         # Dibujar el vector en el sistema de coordenadas tridimensional
         dibujar_vector(x, y, z)
 
-    def Imagen():
+    def Chevrolet():
 
-        imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/chevrolet.png')
+        #imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/chevrolet.png')
+        imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/Kia.png')
         gray = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
         ret, th = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
 
@@ -480,9 +481,13 @@ class Graficar():
 
         mostrar_imagen = True
 
-        for i in range(len(contornos)):
-            cv2.drawContours(imagen, contornos, i, (0, 255, 0), 3)
-            print("Contorno", i, "=", len(contornos[i]))
+        for i, contorno in enumerate(contornos):
+            cv2.drawContours(imagen, [contorno], -1, (0, 255, 0), 3)
+    
+            # Mostrar las coordenadas de todos los puntos del contorno
+            for punto in contorno:
+                x, y = punto[0]
+                cv2.putText(imagen, f'({x}, {y})', (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
     
             cv2.imshow('imagen', imagen)
     
@@ -544,38 +549,9 @@ coordenadas = Coordenadas(x, y, z)
 #Graficar sistema coordenado
 #Graficar.Vectores()
 
-#Graficar.Imagen()
+Graficar.Chevrolet()
+#Graficar.Kia()
 
 
-imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/chevrolet.png')
-gray = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
-ret, th = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
 
-contornos, jerarquia = cv2.findContours(th, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-mostrar_imagen = True
-
-for i, contorno in enumerate(contornos):
-    cv2.drawContours(imagen, [contorno], -1, (0, 255, 0), 3)
-    
-    # Mostrar las coordenadas de todos los puntos del contorno
-    for punto in contorno:
-        x, y = punto[0]
-        cv2.putText(imagen, f'({x}, {y})', (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
-    
-    cv2.imshow('imagen', imagen)
-    
-    while True:
-        key = cv2.waitKey(1)
-        if key == ord('q'):  # Presiona 'q' para salir del bucle
-            mostrar_imagen = False
-            break
-        elif key == ord('n'):  # Presiona 'n' para ir al siguiente contorno
-            break
-    
-    if not mostrar_imagen:
-        break
-
-cv2.imshow('th', th)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
