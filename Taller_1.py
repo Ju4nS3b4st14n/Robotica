@@ -501,6 +501,10 @@ class Graficar():
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> sebastian
 # Vectores previamente inicializados
 vector1 = Vectores(1, 2, 3)
 vector2 = Vectores(4, 5, 6)
@@ -545,6 +549,7 @@ coordenadas = Coordenadas(x, y, z)
 
 #Graficar.Imagen()
 
+<<<<<<< HEAD
 imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/chevrolet.png')
 gray = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
 ret, th = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
@@ -578,3 +583,38 @@ cv2.imshow('th', th)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
+=======
+
+imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/chevrolet.png')
+gray = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+ret, th = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
+
+contornos, jerarquia = cv2.findContours(th, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+mostrar_imagen = True
+
+for i, contorno in enumerate(contornos):
+    cv2.drawContours(imagen, [contorno], -1, (0, 255, 0), 3)
+    
+    # Mostrar las coordenadas de todos los puntos del contorno
+    for punto in contorno:
+        x, y = punto[0]
+        cv2.putText(imagen, f'({x}, {y})', (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
+    
+    cv2.imshow('imagen', imagen)
+    
+    while True:
+        key = cv2.waitKey(1)
+        if key == ord('q'):  # Presiona 'q' para salir del bucle
+            mostrar_imagen = False
+            break
+        elif key == ord('n'):  # Presiona 'n' para ir al siguiente contorno
+            break
+    
+    if not mostrar_imagen:
+        break
+
+cv2.imshow('th', th)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+>>>>>>> sebastian
