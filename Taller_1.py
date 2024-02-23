@@ -470,6 +470,37 @@ class Graficar():
         # Dibujar el vector en el sistema de coordenadas tridimensional
         dibujar_vector(x, y, z)
 
+    def Imagen():
+
+        imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/chevrolet.png')
+        gray = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+        ret, th = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
+
+        contornos, jerarquia = cv2.findContours(th, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        mostrar_imagen = True
+
+        for i in range(len(contornos)):
+            cv2.drawContours(imagen, contornos, i, (0, 255, 0), 3)
+            print("Contorno", i, "=", len(contornos[i]))
+    
+            cv2.imshow('imagen', imagen)
+    
+            while True:
+                key = cv2.waitKey(1)
+                if key == ord('q'):  # Presiona 'q' para salir del bucle
+                    mostrar_imagen = False
+                    break
+                elif key == ord('n'):  # Presiona 'n' para ir al siguiente contorno
+                    break
+    
+            if not mostrar_imagen:
+                break
+
+        cv2.imshow('th', th)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
 # Vectores previamente inicializados
 vector1 = Vectores(1, 2, 3)
 vector2 = Vectores(4, 5, 6)
@@ -512,20 +543,38 @@ coordenadas = Coordenadas(x, y, z)
 #Graficar sistema coordenado
 #Graficar.Vectores()
 
-# # Cargar la imagen del logo (reemplaza 'logo.png' con la ruta de tu imagen)
-# image_path = '/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/chevrolet.png'
-# image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+#Graficar.Imagen()
 
-# # Aplicar umbralización para resaltar los contornos
-# _, thresholded = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
+imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/chevrolet.png')
+gray = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+ret, th = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
 
-# # Encontrar contornos en la imagen umbralizada
-# contours, _ = cv2.findContours(thresholded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+contornos, jerarquia = cv2.findContours(th, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-# # Dibujar los contornos en la imagen original
-# image_with_contours = cv2.drawContours(image.copy(), contours, -1, (0, 255, 0), 2)
+mostrar_imagen = True
 
-# # Mostrar las imágenes
-# plt.subplot(121), plt.imshow(image, cmap='gray'), plt.title('Imagen Original')
-# plt.subplot(122), plt.imshow(image_with_contours, cmap='gray'), plt.title('Contornos')
-# plt.show()
+for i, contorno in enumerate(contornos):
+    cv2.drawContours(imagen, [contorno], -1, (0, 255, 0), 3)
+    
+    # Mostrar las coordenadas de todos los puntos del contorno
+    for punto in contorno:
+        x, y = punto[0]
+        cv2.putText(imagen, f'({x}, {y})', (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
+    
+    cv2.imshow('imagen', imagen)
+    
+    while True:
+        key = cv2.waitKey(1)
+        if key == ord('q'):  # Presiona 'q' para salir del bucle
+            mostrar_imagen = False
+            break
+        elif key == ord('n'):  # Presiona 'n' para ir al siguiente contorno
+            break
+    
+    if not mostrar_imagen:
+        break
+
+cv2.imshow('th', th)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
