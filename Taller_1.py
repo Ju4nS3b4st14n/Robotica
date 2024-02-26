@@ -551,7 +551,3 @@ coordenadas = Coordenadas(x, y, z)
 
 Graficar.Chevrolet()
 #Graficar.Kia()
-
-
-
-
