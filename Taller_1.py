@@ -1,3 +1,5 @@
+# Para ejecutar los ejercicios, dirigirse a la línea 555
+
 import numpy as np
 import math
 import random
