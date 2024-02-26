@@ -575,7 +575,6 @@ coordenadas = Coordenadas(x, y, z)
 
 # Uso de funsiones para gráficar
 
-
 #Graficar.Temperatura()             ##Punto 1
 #Graficar.FuncionTransferencia()    ##Punto 2
 #Graficar.CargaDescarga()           ##Punto 3
