@@ -474,6 +474,8 @@ class Graficar():
 
     def Imagen():
 
+        #La imagen tiene la ruta en donde se encuentran ubicadas las imagenes
+
         #imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/chevrolet.png')
         imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/Kia.png')
         gray = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
