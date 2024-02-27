@@ -474,6 +474,8 @@ class Graficar():
 
     def Imagen():
 
+        #La imagen tiene la ruta en donde se encuentran ubicadas las imagenes
+
         #imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/chevrolet.png')
         imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/Kia.png')
         gray = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
@@ -508,8 +510,40 @@ class Graficar():
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
+    def Nombres(): 
 
->>>>>>> sebastian
+        # Definir los puntos para cada letra
+        letra_S = [[7, 0], [1+7, 0], [1+7, 0.5], [7, 0.5], [7, 1], [8, 1]]
+        letra_e = [[3+7, 0], [2+7, 0], [2+7, 0.5], [3+7, 0.5], [2+7, 0.5],[2+7, 1],[3+7, 1]]
+        letra_r = [[4+7, 0], [4+7, 1], [5+7, 1], [5+7, 0.5], [4+7, 0.5],[5+7, 0]]
+        letra_g = [[7+7, 1], [6+7, 1], [6+7, 0], [7+7, 0], [7+7, 0.5], [6+7, 0.5]]
+        letra_i = [[8+7, 0], [8+7, 1]]
+        letra_o = [[9+7, 0], [9+7, 1], [11+7, 1], [11+7, 0], [9+7, 0]]
+
+        letra_J = [[20, 1], [21, 1], [20.5, 1], [20.5, 0], [20, 0]]
+        letra_U = [[22, 1], [22, 0], [23, 0], [23, 1]]
+        letra_A = [[24, 0], [24, 1], [25, 1], [25, 0], [25, 0.5],[24, 0.5]]
+        letra_N = [[26, 0], [26, 1], [27, 0], [27, 1]]
+
+        letra_C = [[30, 0], [29, 0], [29, 1], [30, 1]]
+        letra_A1 = [[31, 0], [31, 1], [32, 1], [32, 0], [32, 0.5],[31, 0.5]]
+        letra_M = [[33, 0], [33, 1], [33.5, 0.7], [34, 1], [34, 0]]
+        letra_I1 = [[35, 0], [35, 1]]
+        letra_L = [[36, 1], [36, 0], [37, 0]]
+        letra_o1 = [[38, 0], [38, 1], [39, 1], [39, 0], [38, 0]]
+
+
+        # Unir los puntos de cada letra
+        for letra in [letra_S, letra_e, letra_r, letra_g, letra_i, letra_o, letra_J,letra_U, letra_A, letra_N,letra_C,letra_A1, letra_M, letra_I1, letra_o1,letra_L]:
+            x = [punto[0] for punto in letra]
+            y = [punto[1] for punto in letra]
+            plt.plot(x, y, marker='o')
+
+        # Configuraciones adicionales
+        plt.title('Nombre "NOMBRES DEL GRUPO"')
+        plt.grid(True)
+        plt.show()
+
 # Vectores previamente inicializados
 vector1 = Vectores(1, 2, 3)
 vector2 = Vectores(4, 5, 6)
@@ -543,21 +577,11 @@ coordenadas = Coordenadas(x, y, z)
 #IteracionConsola.Continuar()       ##Punto 5
 
 
-#Graficar sensor PT100 desd -200°C a 200°C
-#Graficar.Temperatura()
+# Uso de funsiones para gráficar
 
-#Graficar función de transferencia de sugundo orden
-#Graficar.FuncionTransferencia()
-
-#Graficar carga y descarga de un circuito RC
-#Graficar.CargaDescarga()
-
-#Graficar sistema coordenado
-#Graficar.Vectores()
-
-Graficar.Chevrolet()
-#Graficar.Kia()
-
-
-
-
+#Graficar.Temperatura()             ##Punto 1
+#Graficar.FuncionTransferencia()    ##Punto 2
+#Graficar.CargaDescarga()           ##Punto 3
+#Graficar.Vectores()                ##Punto 4
+#Graficar.Nombres()                 ##Punto 5
+#Graficar.Imagen()                  ##Punto 6 para graficar, hay que descomentar la imagen que se quiera graficar
