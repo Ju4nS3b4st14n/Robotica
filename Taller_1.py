@@ -542,7 +542,7 @@ class Graficar():
         # Configuraciones adicionales
         plt.title('Nombre "NOMBRES DEL GRUPO"')
         plt.grid(True)
-        plt.show()      
+        plt.show()
 
 # Vectores previamente inicializados
 vector1 = Vectores(1, 2, 3)
