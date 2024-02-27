@@ -1,3 +1,5 @@
+# Para ejecutar los ejercicios, dirigirse a la línea 555
+
 import numpy as np
 import math
 import random
@@ -470,7 +472,7 @@ class Graficar():
         # Dibujar el vector en el sistema de coordenadas tridimensional
         dibujar_vector(x, y, z)
 
-    def Chevrolet():
+    def Imagen():
 
         #imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/chevrolet.png')
         imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/Kia.png')
@@ -506,8 +508,6 @@ class Graficar():
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-<<<<<<< HEAD
-=======
 
 >>>>>>> sebastian
 # Vectores previamente inicializados
@@ -516,29 +516,32 @@ vector2 = Vectores(4, 5, 6)
 # Matrices previamente inicializadas
 matriz1 = Matrices([[1, 2], [3, 4]])
 matriz2 = Matrices([[5, 6], [7, 8]])
-#Imprimiendo valores de vectores
-#Imprimir.Vector()
-
-#Imprimiendo valores de matrices
-#Imprimir.Matriz()
-
 # Coordenadas rectangulares (x, y, z)
 x = 3
 y = 4
 z = 5
 coordenadas = Coordenadas(x, y, z)
 
-#Imprimir.Coordenadas()
+#Descomentar la linea del ejercicio para ejecutarlos independientemente
 
-#Imprimir.RTD()
-#Imprimir.Rotaciones()
-#Imprimir.Fuerza()
+# A. Sin iteración de consola
 
-#IteracionConsola.Potencia()
-#IteracionConsola.Aleatorios()
-#IteracionConsola.Volumenes()
-#IteracionConsola.Robot()
-#IteracionConsola.Continuar()
+#Imprimir.Vector()              ##Punto 1
+#Imprimir.Matriz()              ##Punto 2
+#Imprimir.Coordenadas()         ##Punto 3
+#Imprimir.RTD()                 ##Punto 4
+#Imprimir.Rotaciones()          ##Punto 5
+#Imprimir.Fuerza()              ##Punto 6
+
+
+# B. Con iteración de consola
+
+#IteracionConsola.Potencia()        ##Punto 1
+#IteracionConsola.Aleatorios()      ##Punto 2
+#IteracionConsola.Volumenes()       ##Punto 3
+#IteracionConsola.Robot()           ##Punto 4
+#IteracionConsola.Continuar()       ##Punto 5
+
 
 #Graficar sensor PT100 desd -200°C a 200°C
 #Graficar.Temperatura()
@@ -555,71 +558,6 @@ coordenadas = Coordenadas(x, y, z)
 Graficar.Chevrolet()
 #Graficar.Kia()
 
-<<<<<<< HEAD
-imagen = cv2.imread('/home/juansebastiantorres/Documentos/Estudio/Robotica/Laboratorios/Robotica/chevrolet.png')
-gray = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
-ret, th = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
-
-contornos, jerarquia = cv2.findContours(th, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-mostrar_imagen = True
-
-for i, contorno in enumerate(contornos):
-    cv2.drawContours(imagen, [contorno], -1, (0, 255, 0), 3)
-    
-    # Mostrar las coordenadas de todos los puntos del contorno
-    for punto in contorno:
-        x, y = punto[0]
-        cv2.putText(imagen, f'({x}, {y})', (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
-    
-    cv2.imshow('imagen', imagen)
-    
-    while True:
-        key = cv2.waitKey(1)
-        if key == ord('q'):  # Presiona 'q' para salir del bucle
-            mostrar_imagen = False
-            break
-        elif key == ord('n'):  # Presiona 'n' para ir al siguiente contorno
-            break
-    
-    if not mostrar_imagen:
-        break
-
-cv2.imshow('th', th)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-
-=======
 
 
 
-<<<<<<< HEAD
-mostrar_imagen = True
-
-for i, contorno in enumerate(contornos):
-    cv2.drawContours(imagen, [contorno], -1, (0, 255, 0), 3)
-    
-    # Mostrar las coordenadas de todos los puntos del contorno
-    for punto in contorno:
-        x, y = punto[0]
-        cv2.putText(imagen, f'({x}, {y})', (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
-    
-    cv2.imshow('imagen', imagen)
-    
-    while True:
-        key = cv2.waitKey(1)
-        if key == ord('q'):  # Presiona 'q' para salir del bucle
-            mostrar_imagen = False
-            break
-        elif key == ord('n'):  # Presiona 'n' para ir al siguiente contorno
-            break
-    
-    if not mostrar_imagen:
-        break
-
-cv2.imshow('th', th)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
->>>>>>> sebastian
-=======
->>>>>>> sebastian
