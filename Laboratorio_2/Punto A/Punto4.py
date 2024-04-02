@@ -57,7 +57,7 @@ class Ui_MainWindow(object):
         self.label_10 = QtWidgets.QLabel(self.centralwidget)
         self.label_10.setGeometry(QtCore.QRect(530, 520, 221, 151))
         self.label_10.setText("")
-        self.label_10.setPixmap(QtGui.QPixmap("images.png"))
+        self.label_10.setPixmap(QtGui.QPixmap("../Imagenes/images.png"))
         self.label_10.setObjectName("label_10")
         self.widget = QtWidgets.QWidget(self.centralwidget)
         self.widget.setGeometry(QtCore.QRect(40, 120, 721, 390))
