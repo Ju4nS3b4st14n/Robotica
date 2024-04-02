@@ -48,7 +48,7 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Cargar imagen"))
         self.label_7.setText(_translate("MainWindow", "Juan Sebastian Torres"))
         self.label_8.setText(_translate("MainWindow", "Juan Camilo Alberto"))
-        self.label_9.setText(_translate("MainWindow", "Sergio ANdres Lopez"))
+        self.label_9.setText(_translate("MainWindow", "Sergio Andres Lopez"))
     
     def loadImage(self):
         imagePath, _ = QFileDialog.getOpenFileName()

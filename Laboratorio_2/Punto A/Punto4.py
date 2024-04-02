@@ -82,7 +82,7 @@ class Ui_MainWindow(object):
         self.label_6.setText(_translate("MainWindow", "(v): 0"))
         self.label_7.setText(_translate("MainWindow", "Juan Sebastian Torres"))
         self.label_8.setText(_translate("MainWindow", "Juan Camilo Alberto"))
-        self.label_9.setText(_translate("MainWindow", "Sergio ANdres Lopez"))
+        self.label_9.setText(_translate("MainWindow", "Sergio Andres Lopez"))
 
         # Inicializar un lienzo de figuras vacío
         self.canvas = FigureCanvas(plt.figure())

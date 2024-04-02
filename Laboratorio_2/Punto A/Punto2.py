@@ -76,7 +76,7 @@ class Ui_MainWindow(object):
         self.pushButton.clicked.connect(self.Grafica)
         self.label_4.setText(_translate("MainWindow", "Juan Sebastian Torres"))
         self.label_5.setText(_translate("MainWindow", "Juan Camilo Alberto"))
-        self.label_6.setText(_translate("MainWindow", "Sergio ANdres Lopez"))
+        self.label_6.setText(_translate("MainWindow", "Sergio Andres Lopez"))
         self.comboBox.addItem("Selecciona una función")
         self.comboBox.addItem("Seno")
         self.comboBox.addItem("Coseno")

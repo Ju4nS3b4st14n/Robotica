@@ -116,7 +116,7 @@ class Ui_MainWindow(object):
         self.cotangente.setText(_translate("MainWindow", "Cotangente"))
         self.label_4.setText(_translate("MainWindow", "Juan Sebastian Torres"))
         self.label_5.setText(_translate("MainWindow", "Juan Camilo Alberto"))
-        self.label_6.setText(_translate("MainWindow", "Sergio ANdres Lopez"))
+        self.label_6.setText(_translate("MainWindow", "Sergio Andres Lopez"))
         self.label_7.setText(_translate("MainWindow", "Operaciones aritmeticas"))
         self.label_8.setText(_translate("MainWindow", "Operaciones trigonometricas"))
         self.resultadob.setText(_translate("MainWindow", "Resultado"))
