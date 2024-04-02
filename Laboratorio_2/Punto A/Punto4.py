@@ -57,7 +57,7 @@ class Ui_MainWindow(object):
         self.label_10 = QtWidgets.QLabel(self.centralwidget)
         self.label_10.setGeometry(QtCore.QRect(530, 520, 221, 151))
         self.label_10.setText("")
-        self.label_10.setPixmap(QtGui.QPixmap("images.png"))
+        self.label_10.setPixmap(QtGui.QPixmap("../Imagenes/images.png"))
         self.label_10.setObjectName("label_10")
         self.widget = QtWidgets.QWidget(self.centralwidget)
         self.widget.setGeometry(QtCore.QRect(40, 120, 721, 390))
@@ -82,7 +82,7 @@ class Ui_MainWindow(object):
         self.label_6.setText(_translate("MainWindow", "(v): 0"))
         self.label_7.setText(_translate("MainWindow", "Juan Sebastian Torres"))
         self.label_8.setText(_translate("MainWindow", "Juan Camilo Alberto"))
-        self.label_9.setText(_translate("MainWindow", "Sergio ANdres Lopez"))
+        self.label_9.setText(_translate("MainWindow", "Sergio Andres Lopez"))
 
         # Inicializar un lienzo de figuras vacío
         self.canvas = FigureCanvas(plt.figure())

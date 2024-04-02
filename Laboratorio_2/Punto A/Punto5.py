@@ -7,7 +7,7 @@ import numpy as np
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
+        MainWindow.resize(800, 700)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         
@@ -15,7 +15,20 @@ class Ui_MainWindow(object):
         self.label.setGeometry(QtCore.QRect(110, 140, 591, 361))
         self.label.setObjectName("label")
         self.label.setScaledContents(True)
-        
+        self.label_7 = QtWidgets.QLabel(self.centralwidget)
+        self.label_7.setGeometry(QtCore.QRect(50, 530, 160, 25))
+        self.label_7.setObjectName("label_7")
+        self.label_8 = QtWidgets.QLabel(self.centralwidget)
+        self.label_8.setGeometry(QtCore.QRect(50, 570, 160, 25))
+        self.label_8.setObjectName("label_8")
+        self.label_9 = QtWidgets.QLabel(self.centralwidget)
+        self.label_9.setGeometry(QtCore.QRect(50, 610, 160, 25))
+        self.label_9.setObjectName("label_9")
+        self.label_10 = QtWidgets.QLabel(self.centralwidget)
+        self.label_10.setGeometry(QtCore.QRect(530, 520, 221, 151))
+        self.label_10.setText("")
+        self.label_10.setPixmap(QtGui.QPixmap("../Imagenes/images.png"))
+        self.label_10.setObjectName("label_10")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(330, 70, 151, 25))
         self.pushButton.setObjectName("pushButton")
@@ -33,6 +46,9 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.pushButton.setText(_translate("MainWindow", "Cargar imagen"))
+        self.label_7.setText(_translate("MainWindow", "Juan Sebastian Torres"))
+        self.label_8.setText(_translate("MainWindow", "Juan Camilo Alberto"))
+        self.label_9.setText(_translate("MainWindow", "Sergio Andres Lopez"))
     
     def loadImage(self):
         imagePath, _ = QFileDialog.getOpenFileName()
