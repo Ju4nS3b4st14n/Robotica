@@ -61,15 +61,15 @@ class Ui_MainWindow(object):
 
         # Inicializar el contador de clics
         self.click_count = 0
-        led1 = LED(23).off()
-        LED(22).off()
+        #led1 = LED(23).off()
+        #LED(22).off()
         self.click_count2 = 0
 
         # Inicializar el LED con intensidad 0 (apagado)
-        self.led1 = PWMLED(17)
-        self.led2 = PWMLED(27)
-        self.led3 = LED(23)
-        self.led4 = LED(22)
+        #self.led1 = PWMLED(17)
+        #self.led2 = PWMLED(27)
+        #self.led3 = LED(23)
+        #self.led4 = LED(22)
         
 
     def retranslateUi(self, MainWindow):
