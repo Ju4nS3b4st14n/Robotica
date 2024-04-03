@@ -1,68 +1,51 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from gpiozero import *
+import RPi.GPIO as GPIO
 import time
 
+# Definir los pines de control del motor
+IN1 = 17  # Puede ser cualquier pin GPIO disponible en tu Raspberry Pi
+IN2 = 18  # Puede ser cualquier pin GPIO disponible en tu Raspberry Pi
+IN3 = 22  # Puede ser cualquier pin GPIO disponible en tu Raspberry Pi
+IN4 = 23  # Puede ser cualquier pin GPIO disponible en tu Raspberry Pi
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(250, 60, 301, 17))
-        self.label.setObjectName("label")
-        self.textEdit = QtWidgets.QTextEdit(self.centralwidget)
-        self.textEdit.setGeometry(QtCore.QRect(330, 110, 113, 25))
-        self.textEdit.setObjectName("textEdit")
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(340, 160, 89, 25))
-        self.pushButton.setObjectName("pushButton")
-        self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(320, 220, 131, 17))
-        self.label_2.setObjectName("label_2")
-        self.label_3 = QtWidgets.QLabel(self.centralwidget)
-        self.label_3.setGeometry(QtCore.QRect(320, 270, 145, 17))
-        self.label_3.setObjectName("label_3")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+# Configurar los pines GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(IN1, GPIO.OUT)
+GPIO.setup(IN2, GPIO.OUT)
+GPIO.setup(IN3, GPIO.OUT)
+GPIO.setup(IN4, GPIO.OUT)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+# Definir la secuencia de control para el motor
+# Puedes ajustar esta secuencia según el tipo de motor que estés utilizando
+sequence = [
+    [1, 0, 0, 1],
+    [1, 0, 0, 0],
+    [1, 1, 0, 0],
+    [0, 1, 0, 0],
+    [0, 1, 1, 0],
+    [0, 0, 1, 0],
+    [0, 0, 1, 1],
+    [0, 0, 0, 1]
+]
 
-        self.pushButton.clicked.connect(self.tiempo)
+# Función para mover el motor en una dirección específica durante un tiempo determinado
+def move_motor(direction, duration):
+    steps = len(sequence)
+    for _ in range(int(duration / (0.001 * steps))):
+        for i in range(steps):
+            GPIO.output(IN1, sequence[i][0])
+            GPIO.output(IN2, sequence[i][1])
+            GPIO.output(IN3, sequence[i][2])
+            GPIO.output(IN4, sequence[i][3])
+            time.sleep(0.001)
 
-        self.sensor = DistanceSensor(echo=18, trigger=17)
+# Mover el motor en una dirección durante 5 segundos (por ejemplo, en sentido horario)
+move_motor(direction="clockwise", duration=5)
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "Tiempo de muestra del sensor en segundos"))
-        self.pushButton.setText(_translate("MainWindow", "Iniciar"))
-        self.label_2.setText(_translate("MainWindow", "Lextura del sensor"))
-        self.label_3.setText(_translate("MainWindow", "Distancia ... metros"))
+# Detener el motor
+GPIO.output(IN1, 0)
+GPIO.output(IN2, 0)
+GPIO.output(IN3, 0)
+GPIO.output(IN4, 0)
 
-    def tiempo(self):
-
-        t = self.textEdit.toPlainText()
-        t1 = time.time()
-        t2 = 0.0
-        while t2 <= float(t):
-            distancia = self.sensor.distance
-            self.label_3.setText("Distancia {:.2f} metros".format(distancia))
-            QtWidgets.QApplication.processEvents()
-            print(f"El tiempo es {t2}s \n")
-            t2 = time.time() - t1
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
-
+# Limpiar los pines GPIO
+GPIO.cleanup()
