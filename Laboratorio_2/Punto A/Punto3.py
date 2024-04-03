@@ -10,7 +10,7 @@ class Ui_MainWindow(object):
         self.comboBox.setGeometry(QtCore.QRect(290, 500, 191, 25))
         self.comboBox.setObjectName("comboBox")
         self.label_imagen = QtWidgets.QLabel(self.centralwidget)
-        self.label_imagen.setGeometry(QtCore.QRect(0, 0, 641, 391))
+        self.label_imagen.setGeometry(QtCore.QRect(200, 50, 400, 300))
         self.label_imagen.setObjectName("label")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(260, 460, 250, 20))
@@ -41,7 +41,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Segundo punto"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Tercer punto"))
         self.label.setText(_translate("MainWindow", "Número de articulaciones y sus tipos"))
         self.label_4.setText(_translate("MainWindow", "Juan Sebastian Torres"))
         self.label_5.setText(_translate("MainWindow", "Juan Camilo Alberto"))
@@ -55,13 +55,18 @@ class Ui_MainWindow(object):
         # Define las rutas de las imágenes según la opción seleccionada
         if seleccion == "Cartesiano":
             print("Cartesiano")
-            #imagen_path = "../Imagenes/cartesiano.png"
+            imagen_path = "../Imagenes/Cartesiano.jpeg"
+            self.label.setText("tiene 3 articulaciones")
+
         elif seleccion == "Esférico":
             imagen_path = "../Imagenes/Esferico.jpeg"
-            print("Esférico")
+            self.label.setText("tiene 3 articulaciones")
+            
         elif seleccion == "Cilindrico":
             print("Cilindrico")
-            #imagen_path = "../Imagenes/cilindrico.png"
+            imagen_path = "../Imagenes/Cilindrico.jpeg"
+            self.label.setText("tiene 3 articulaciones")
+
         else:
             self.label.setText("¡No has seleccionado ningún robot!")
             self.label.setStyleSheet("color: red")
