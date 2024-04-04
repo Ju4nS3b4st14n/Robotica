@@ -10,11 +10,11 @@ class Ui_MainWindow(object):
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(270, 150, 89, 25))
         self.pushButton.setObjectName("pushButton")
-        self.pushButton.setStyleSheet("background-color: black; color: white;")  # Establecer el color de fondo y el color de texto
+        self.pushButton.setStyleSheet("color: black")  # Establecer el color de fondo y el color de texto
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_2.setGeometry(QtCore.QRect(380, 150, 89, 25))
         self.pushButton_2.setObjectName("pushButton_2")
-        self.pushButton_2.setStyleSheet("background-color: black; color: white;")  # Establecer el color de fondo y el color de texto
+        self.pushButton_2.setStyleSheet("color: black")  # Establecer el color de fondo y el color de texto
         self.horizontalSlider = QtWidgets.QSlider(self.centralwidget)
         self.horizontalSlider.setGeometry(QtCore.QRect(230, 240, 301, 16))
         self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
@@ -90,12 +90,12 @@ class Ui_MainWindow(object):
         if self.click_count % 2 == 1:
             self.led3.on()
             self.pushButton.setText("ON")
-            self.pushButton.setStyleSheet("background-color: red; color: black;")
+            self.pushButton.setStyleSheet("color: yellow")
         
         else: 
             self.led3.off()
             self.pushButton.setText("OFF")
-            self.pushButton.setStyleSheet("background-color: black; color: white")
+            self.pushButton.setStyleSheet("color: black")
         
     def led2btn(self):
         self.click_count2 += 1
@@ -103,12 +103,12 @@ class Ui_MainWindow(object):
         if self.click_count2 % 2 == 1:
             self.led4.on()
             self.pushButton_2.setText("ON")
-            self.pushButton_2.setStyleSheet("background-color: red; color: black;")
+            self.pushButton_2.setStyleSheet("color: blue")
         
         else: 
             self.led4.off()
             self.pushButton_2.setText("OFF")
-            self.pushButton_2.setStyleSheet("background-color: black; color: white")
+            self.pushButton_2.setStyleSheet("color: black")
         
 
     def led1slider(self, value):
