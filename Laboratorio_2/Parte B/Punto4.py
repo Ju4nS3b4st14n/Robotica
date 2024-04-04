@@ -35,7 +35,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        pin_number = 17 
+        pin_number = 21 
         self.button = Button(pin_number)
 
         self.timer = QtCore.QTimer(MainWindow)
