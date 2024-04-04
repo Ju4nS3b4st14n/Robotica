@@ -15,49 +15,28 @@ GPIO.setup(IN3, GPIO.OUT)
 GPIO.setup(IN4, GPIO.OUT)
 
 # Definir la secuencia de control para el motor
-# Puedes ajustar esta secuencia según el tipo de motor que estés utilizando
 sequence = [
     [1, 0, 0, 0],
-    [1, 1, 0, 0],
     [0, 1, 0, 0],
-    [0, 1, 1, 0],
     [0, 0, 1, 0],
-    [0, 0, 1, 1],
-    [0, 0, 0, 1],
-    [1, 0, 0, 1]
+    [0, 0, 0, 1]
 ]
-
-# Función para mover el motor en una dirección específica durante un tiempo determinado
-def move_motor(direction, duration):
-    steps = len(sequence)
-    for _ in range(int(duration / (0.001 * steps))):
-        for i in range(steps):
-            GPIO.output(IN1, sequence[i][0])
-            GPIO.output(IN2, sequence[i][1])
-            GPIO.output(IN3, sequence[i][2])
-            GPIO.output(IN4, sequence[i][3])
-            time.sleep(0.001)
 
 # Función para mover el motor una cantidad específica de vueltas
 def move_motor_vueltas(direction, vueltas):
-    resolucion_motor = 512  # Por ejemplo, ajusta este valor según la resolución de tu motor
-    pasos_por_vuelta = resolucion_motor * 2  # Dado que cada secuencia de pasos implica dos pasos
+    pasos_por_vuelta = 360 / 7.5  # Cada vuelta son 360 grados y el motor tiene una resolución de 7.5° por paso
     pasos_totales = pasos_por_vuelta * vueltas
     
-    steps = len(sequence)
-    for _ in range(pasos_totales):
-        for i in range(steps):
+    for _ in range(int(pasos_totales)):
+        for i in range(len(sequence)):
             GPIO.output(IN1, sequence[i][0])
             GPIO.output(IN2, sequence[i][1])
             GPIO.output(IN3, sequence[i][2])
             GPIO.output(IN4, sequence[i][3])
-            time.sleep(0.001)
-
-# Mover el motor en una dirección durante 5 segundos (por ejemplo, en sentido horario)
-move_motor(direction="clockwise", duration=2)
+            time.sleep(0.01)  # Ajusta el tiempo de espera según la velocidad del motor
 
 # Mover el motor en sentido horario durante 10 vueltas
-move_motor_vueltas(direction="clockwise", vueltas=3)
+move_motor_vueltas(direction="clockwise", vueltas=10)
 
 # Detener el motor
 GPIO.output(IN1, 0)
