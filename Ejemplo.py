@@ -1,32 +1,51 @@
+import RPi.GPIO as GPIO
 import time
-from board import SCL, SDA
-import busio
-from adafruit_pca9685 import PCA9685
 
-# Configurar la comunicación I2C
-i2c = busio.I2C(SCL, SDA)
+# Definir los pines de control del motor
+IN1 = 17  # Puede ser cualquier pin GPIO disponible en tu Raspberry Pi
+IN2 = 18  # Puede ser cualquier pin GPIO disponible en tu Raspberry Pi
+IN3 = 22  # Puede ser cualquier pin GPIO disponible en tu Raspberry Pi
+IN4 = 23  # Puede ser cualquier pin GPIO disponible en tu Raspberry Pi
 
-# Crear una instancia del objeto PCA9685
-pca = PCA9685(i2c)
+# Configurar los pines GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(IN1, GPIO.OUT)
+GPIO.setup(IN2, GPIO.OUT)
+GPIO.setup(IN3, GPIO.OUT)
+GPIO.setup(IN4, GPIO.OUT)
 
-# Establecer la frecuencia del reloj en Hz (por defecto es 50Hz)
-pca.frequency = 60
+# Definir la secuencia de control para el motor
+# Puedes ajustar esta secuencia según el tipo de motor que estés utilizando
+sequence = [
+    [1, 0, 0, 1],
+    [1, 0, 0, 0],
+    [1, 1, 0, 0],
+    [0, 1, 0, 0],
+    [0, 1, 1, 0],
+    [0, 0, 1, 0],
+    [0, 0, 1, 1],
+    [0, 0, 0, 1]
+]
 
-# Función para mover un servo a una posición específica
-def move_servo(channel, angle):
-    # Convertir el ángulo deseado (0-180) a un valor de pulso (150-600)
-    pulse = int(2.5 + angle / 180 * 20)  # Fórmula aproximada para el cálculo del pulso
-    pca.channels[channel].duty_cycle = int(pulse / 20 * 65535)  # Escalar el valor de pulso al rango de 0-65535
+# Función para mover el motor en una dirección específica durante un tiempo determinado
+def move_motor(direction, duration):
+    steps = len(sequence)
+    for _ in range(int(duration / (0.001 * steps))):
+        for i in range(steps):
+            GPIO.output(IN1, sequence[i][0])
+            GPIO.output(IN2, sequence[i][1])
+            GPIO.output(IN3, sequence[i][2])
+            GPIO.output(IN4, sequence[i][3])
+            time.sleep(0.001)
 
-# Mover el servo conectado al canal 0 a 0 grados
-move_servo(channel=0, angle=0)
-time.sleep(1)
+# Mover el motor en una dirección durante 5 segundos (por ejemplo, en sentido horario)
+move_motor(direction="clockwise", duration=5)
 
-# Mover el servo conectado al canal 0 a 180 grados
-move_servo(channel=0, angle=180)
-time.sleep(1)
+# Detener el motor
+GPIO.output(IN1, 0)
+GPIO.output(IN2, 0)
+GPIO.output(IN3, 0)
+GPIO.output(IN4, 0)
 
-# Detener el movimiento del servo
-move_servo(channel=0, angle=90)
-
-# Puedes ajustar los valores de los canales y los ángulos según tus necesidades
+# Limpiar los pines GPIO
+GPIO.cleanup()
