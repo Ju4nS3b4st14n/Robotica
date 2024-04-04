@@ -38,8 +38,26 @@ def move_motor(direction, duration):
             GPIO.output(IN4, sequence[i][3])
             time.sleep(0.001)
 
+# Función para mover el motor una cantidad específica de vueltas
+def move_motor_vueltas(direction, vueltas):
+    resolucion_motor = 512  # Por ejemplo, ajusta este valor según la resolución de tu motor
+    pasos_por_vuelta = resolucion_motor * 2  # Dado que cada secuencia de pasos implica dos pasos
+    pasos_totales = pasos_por_vuelta * vueltas
+    
+    steps = len(sequence)
+    for _ in range(pasos_totales):
+        for i in range(steps):
+            GPIO.output(IN1, sequence[i][0])
+            GPIO.output(IN2, sequence[i][1])
+            GPIO.output(IN3, sequence[i][2])
+            GPIO.output(IN4, sequence[i][3])
+            time.sleep(0.001)
+
 # Mover el motor en una dirección durante 5 segundos (por ejemplo, en sentido horario)
 move_motor(direction="clockwise", duration=5)
+
+# Mover el motor en sentido horario durante 10 vueltas
+move_motor_vueltas(direction="clockwise", vueltas=10)
 
 # Detener el motor
 GPIO.output(IN1, 0)
