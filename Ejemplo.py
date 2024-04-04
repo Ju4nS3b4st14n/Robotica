@@ -1,53 +1,32 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+import time
+from board import SCL, SDA
+import busio
+from adafruit_pca9685 import PCA9685
 
-#Libraries
-import time    #https://docs.python.org/fr/3/library/time.html
-from adafruit_servokit import ServoKit    #https://circuitpython.readthedocs.io/projects/servokit/en/latest/
+# Configurar la comunicación I2C
+i2c = busio.I2C(SCL, SDA)
 
-#Constants
-nbPCAServo=16 
+# Crear una instancia del objeto PCA9685
+pca = PCA9685(i2c)
 
-#Parameters
-MIN_IMP  =[500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500]
-MAX_IMP  =[2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500]
-MIN_ANG  =[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-MAX_ANG  =[180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180]
+# Establecer la frecuencia del reloj en Hz (por defecto es 50Hz)
+pca.frequency = 60
 
-#Objects
-pca = ServoKit(channels=16)
+# Función para mover un servo a una posición específica
+def move_servo(channel, angle):
+    # Convertir el ángulo deseado (0-180) a un valor de pulso (150-600)
+    pulse = int(2.5 + angle / 180 * 20)  # Fórmula aproximada para el cálculo del pulso
+    pca.channels[channel].duty_cycle = int(pulse / 20 * 65535)  # Escalar el valor de pulso al rango de 0-65535
 
-# function init 
-def init():
+# Mover el servo conectado al canal 0 a 0 grados
+move_servo(channel=0, angle=0)
+time.sleep(1)
 
-    for i in range(nbPCAServo):
-        pca.servo[i].set_pulse_width_range(MIN_IMP[i] , MAX_IMP[i])
+# Mover el servo conectado al canal 0 a 180 grados
+move_servo(channel=0, angle=180)
+time.sleep(1)
 
+# Detener el movimiento del servo
+move_servo(channel=0, angle=90)
 
-# function main 
-def main():
-
-    pcaScenario();
-
-
-# function pcaScenario 
-def pcaScenario():
-    """Scenario to test servo"""
-    for i in range(nbPCAServo):
-        for j in range(MIN_ANG[i],MAX_ANG[i],1):
-            print("Send angle {} to Servo {}".format(j,i))
-            pca.servo[i].angle = j
-            time.sleep(0.01)
-        for j in range(MAX_ANG[i],MIN_ANG[i],-1):
-            print("Send angle {} to Servo {}".format(j,i))
-            pca.servo[i].angle = j
-            time.sleep(0.01)
-        pca.servo[i].angle=None #disable channel
-        time.sleep(0.5)
-
-
-
-
-if __name__ == '__main__':
-    init()
-    main()
+# Puedes ajustar los valores de los canales y los ángulos según tus necesidades
