@@ -54,10 +54,13 @@ class Ui_MainWindow(object):
         self.label_9 = QtWidgets.QLabel(self.centralwidget)
         self.label_9.setGeometry(QtCore.QRect(50, 610, 160, 25))
         self.label_9.setObjectName("label_9")
+        self.label_11 = QtWidgets.QLabel(self.centralwidget)
+        self.label_11.setGeometry(QtCore.QRect(50, 650, 160, 25))
+        self.label_11.setObjectName("label_11")
         self.label_10 = QtWidgets.QLabel(self.centralwidget)
         self.label_10.setGeometry(QtCore.QRect(530, 520, 221, 151))
         self.label_10.setText("")
-        self.label_10.setPixmap(QtGui.QPixmap("../Imagenes/images.png"))
+        self.label_10.setPixmap(QtGui.QPixmap("../Robotica/Laboratorio_2/Imagenes/images.png"))
         self.label_10.setObjectName("label_10")
         self.widget = QtWidgets.QWidget(self.centralwidget)
         self.widget.setGeometry(QtCore.QRect(40, 120, 721, 390))
@@ -73,7 +76,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Tercer punto"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Cuart punto"))
         self.label.setText(_translate("MainWindow", "Resistencia"))
         self.label_2.setText(_translate("MainWindow", "Capacitancia"))
         self.label_3.setText(_translate("MainWindow", "Voltaje"))
@@ -83,6 +86,7 @@ class Ui_MainWindow(object):
         self.label_7.setText(_translate("MainWindow", "Juan Sebastian Torres"))
         self.label_8.setText(_translate("MainWindow", "Juan Camilo Alberto"))
         self.label_9.setText(_translate("MainWindow", "Sergio Andres Lopez"))
+        self.label_11.setText(_translate("MainWindow", "Steven Santana"))
 
         # Inicializar un lienzo de figuras vacío
         self.canvas = FigureCanvas(plt.figure())

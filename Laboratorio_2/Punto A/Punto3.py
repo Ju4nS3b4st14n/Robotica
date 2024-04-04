@@ -13,7 +13,7 @@ class Ui_MainWindow(object):
         self.label_imagen.setGeometry(QtCore.QRect(200, 50, 400, 300))
         self.label_imagen.setObjectName("label")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(260, 460, 250, 20))
+        self.label.setGeometry(QtCore.QRect(260, 380, 380, 20))
         self.label.setObjectName("label")
         self.label_4 = QtWidgets.QLabel(self.centralwidget)
         self.label_4.setGeometry(QtCore.QRect(20, 510, 160, 25))
@@ -24,10 +24,13 @@ class Ui_MainWindow(object):
         self.label_6 = QtWidgets.QLabel(self.centralwidget)
         self.label_6.setGeometry(QtCore.QRect(20, 480, 160, 25))
         self.label_6.setObjectName("label_6")
+        self.label_9 = QtWidgets.QLabel(self.centralwidget)
+        self.label_9.setGeometry(QtCore.QRect(20, 540, 160, 25))
+        self.label_9.setObjectName("label_9")
         self.label_11 = QtWidgets.QLabel(self.centralwidget)
         self.label_11.setGeometry(QtCore.QRect(580, 430, 221, 151))
         self.label_11.setText("")
-        self.label_11.setPixmap(QtGui.QPixmap("../Imagenes/images.png"))
+        self.label_11.setPixmap(QtGui.QPixmap("../Robotica/Laboratorio_2/Imagenes/images.png"))
         self.label_11.setObjectName("label_11")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -46,6 +49,7 @@ class Ui_MainWindow(object):
         self.label_4.setText(_translate("MainWindow", "Juan Sebastian Torres"))
         self.label_5.setText(_translate("MainWindow", "Juan Camilo Alberto"))
         self.label_6.setText(_translate("MainWindow", "Sergio Andres Lopez"))
+        self.label_9.setText(_translate("MainWindow", "Steven Santana"))
         self.comboBox.addItem("Selecciona un robot")
         self.comboBox.addItem("Cartesiano")
         self.comboBox.addItem("Esférico")
@@ -55,17 +59,17 @@ class Ui_MainWindow(object):
         # Define las rutas de las imágenes según la opción seleccionada
         if seleccion == "Cartesiano":
             print("Cartesiano")
-            imagen_path = "../Imagenes/Cartesiano.jpeg"
-            self.label.setText("tiene 3 articulaciones")
+            imagen_path = "../Robotica/Laboratorio_2/Imagenes/Cartesiano.jpeg"
+            self.label.setText("tiene 3 articulaciones tipo cartesianas")
 
         elif seleccion == "Esférico":
-            imagen_path = "../Imagenes/Esferico.jpeg"
-            self.label.setText("tiene 3 articulaciones")
+            imagen_path = "../Robotica/Laboratorio_2/Imagenes/Esferico.jpeg"
+            self.label.setText("tiene 3 articulaciones una cartesianas y dos rotacionales")
             
         elif seleccion == "Cilindrico":
             print("Cilindrico")
-            imagen_path = "../Imagenes/Cilindrico.jpeg"
-            self.label.setText("tiene 3 articulaciones")
+            imagen_path = "../Robotica/Laboratorio_2/Imagenes/Cilindrico.jpeg"
+            self.label.setText("tiene 3 articulaciones dos cartesianas y una rotacional")
 
         else:
             self.label.setText("¡No has seleccionado ningún robot!")
