@@ -22,10 +22,13 @@ class Ui_MainWindow(object):
         self.label_5 = QtWidgets.QLabel(self.centralwidget)
         self.label_5.setGeometry(QtCore.QRect(20, 480, 160, 25))
         self.label_5.setObjectName("label_5")
+        self.label_7 = QtWidgets.QLabel(self.centralwidget)
+        self.label_7.setGeometry(QtCore.QRect(20, 540, 160, 25))
+        self.label_7.setObjectName("label_6")
         self.label_6 = QtWidgets.QLabel(self.centralwidget)
         self.label_6.setGeometry(QtCore.QRect(500, 380, 221, 151))
         self.label_6.setText("")
-        self.label_6.setPixmap(QtGui.QPixmap("../Imagenes/images.png"))
+        self.label_6.setPixmap(QtGui.QPixmap("../Robotica/Laboratorio_2/Imagenes/images.png"))
         self.label_6.setObjectName("label_6")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -51,6 +54,7 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "Juan Sebastian Torres"))
         self.label_4.setText(_translate("MainWindow", "Juan Camilo Alberto"))
         self.label_5.setText(_translate("MainWindow", "Sergio Andres Lopez"))
+        self.label_7.setText(_translate("MainWindow", "Steven Santana"))
 
     def update_label(self):
 
