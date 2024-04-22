@@ -1,5 +1,5 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
 import RPi.GPIO as GPIO
+from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 from time import sleep
 
@@ -65,6 +65,7 @@ class Ui_MainWindow(object):
         
     def update_angle(self):
         valor = str(self.horizontalSlider.value())
+        self.label_2.setText("Grados: {} °".format(valor))  # Ajuste: Actualizar el texto del label con el valor del slider
         angle = int(valor)
         if self.selected_motor:
             self.move_servo(self.selected_motor, angle)
@@ -101,11 +102,9 @@ class Ui_MainWindow(object):
         GPIO.cleanup()
 
 if __name__ == "__main__":
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
