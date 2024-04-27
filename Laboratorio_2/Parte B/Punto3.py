@@ -48,7 +48,7 @@ class Ui_MainWindow(object):
 
         self.pushButton.clicked.connect(self.tiempo)
 
-        #self.sensor = DistanceSensor(echo=18, trigger=17)
+        self.sensor = DistanceSensor(echo=18, trigger=17)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

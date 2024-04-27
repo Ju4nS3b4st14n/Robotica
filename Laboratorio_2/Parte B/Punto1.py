@@ -79,7 +79,7 @@ class Ui_MainWindow(object):
             return
         if motor_id == "1":
             self.selected_motor = 33
-         #   angle = self.horizontalSlider.value()
+
         elif motor_id == "2":
             self.selected_motor = 35
         #    self.horizontalSlider.setValue(180)

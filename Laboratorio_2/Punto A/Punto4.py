@@ -19,7 +19,7 @@ class Ui_MainWindow(object):
         self.horizontalSlider_2.setGeometry(QtCore.QRect(270, 50, 261, 16))
         self.horizontalSlider_2.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalSlider_2.setObjectName("horizontalSlider_2")
-        self.horizontalSlider_2.setRange(0, 10000)  # Modificar el rango del slider
+        self.horizontalSlider_2.setRange(0, 100)  # Modificar el rango del slider
         self.horizontalSlider_2.valueChanged.connect(self.on_slider_valueChanged)  # Conectar la señal valueChanged
         self.horizontalSlider_3 = QtWidgets.QSlider(self.centralwidget)
         self.horizontalSlider_3.setGeometry(QtCore.QRect(270, 80, 261, 16))

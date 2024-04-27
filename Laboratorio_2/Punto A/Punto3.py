@@ -60,16 +60,16 @@ class Ui_MainWindow(object):
         if seleccion == "Cartesiano":
             print("Cartesiano")
             imagen_path = "../Robotica/Laboratorio_2/Imagenes/Cartesiano.jpeg"
-            self.label.setText("tiene 3 articulaciones tipo cartesianas")
+            self.label.setText("tiene 3 articulaciones tipo Prismaticas")
 
         elif seleccion == "Esférico":
             imagen_path = "../Robotica/Laboratorio_2/Imagenes/Esferico.jpeg"
-            self.label.setText("tiene 3 articulaciones una cartesianas y dos rotacionales")
+            self.label.setText("tiene 3 articulaciones una Prismaticas y dos rotacionales")
             
         elif seleccion == "Cilindrico":
             print("Cilindrico")
             imagen_path = "../Robotica/Laboratorio_2/Imagenes/Cilindrico.jpeg"
-            self.label.setText("tiene 3 articulaciones dos cartesianas y una rotacional")
+            self.label.setText("tiene 3 articulaciones dos Prismaticas y una rotacional")
 
         else:
             self.label.setText("¡No has seleccionado ningún robot!")
