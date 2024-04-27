@@ -1,5 +1,7 @@
+import RPi.GPIO as GPIO
 from PyQt5 import QtCore, QtGui, QtWidgets
-from gpiozero import *
+import sys
+from time import sleep
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -45,11 +47,11 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        
+        self.textEdit.textChanged.connect(self.move_motor)
+        self.horizontalSlider.valueChanged.connect(self.update_angle)
 
-        self.horizontalSlider.valueChanged.connect(self.controlServ)
-
-        self.serv1 = Servo(19)
-        self.serv2 = Servo(16)
+        self.selected_motor = None
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -60,32 +62,46 @@ class Ui_MainWindow(object):
         self.label_4.setText(_translate("MainWindow", "Juan Sebastian Torres"))
         self.label_5.setText(_translate("MainWindow", "Juan Camilo Alberto"))
         self.label_6.setText(_translate("MainWindow", "Sergio ANdres Lopez"))
-
-    def controlServ(self, value):
-
-        Servomotor = self.textEdit.toPlainText()
         
-        if Servomotor == '1' :
-            pos = value / 180
-            print (pos)
-            self.serv1.value = pos
-            self.label_2.setText("Grados: {} °".format(value))
-            self.label_3.setText("Servomotor: 1")
-            self.label_3.setStyleSheet("color: black")
+    def update_angle(self):
+        valor = str(self.horizontalSlider.value())
+        self.label_2.setText("Grados: {} °".format(valor))  # Ajuste: Actualizar el texto del label con el valor del slider
+        angle = int(valor)
+        if self.selected_motor:
+            self.move_servo(self.selected_motor, angle)
 
-        elif Servomotor == '2' :
-            self.serv2.value = value / 180
-            self.label_2.setText("Grados: {} °".format(value))
-            self.label_3.setText("Servomotor: 2")
-            self.label_3.setStyleSheet("color: black")
+    def move_motor(self):
         
-        else:
-            self.label_2.setText("Grados: 0")
-            self.label_3.setText("No seleccionado")
-            self.label_3.setStyleSheet("color: red")
+        motor_id = self.textEdit.toPlainText()
+        
+        if motor_id not in ["1", "2"]:
+            self.selected_motor = None
+            return
+        if motor_id == "1":
+            self.selected_motor = 33
+        elif motor_id == "2":
+            self.selected_motor = 35
+        angle = self.horizontalSlider.value()
+        self.move_servo(self.selected_motor, angle)
+            
+    def move_servo(self, servo_pin, angle):
+    
+        if servo_pin is None:
+            return
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(servo_pin, GPIO.OUT)
+        pulso = GPIO.PWM(servo_pin, 50)
+        pulso.start(1.5)
+        
+        for i in range(0, angle):
+            grados = ((1.0/18.0) * i) + 2.5
+            pulso.ChangeDutyCycle(grados)
+            sleep(0.05)  # Agregar un pequeño retardo entre cada movimiento
+        sleep(2)
+        pulso.stop()
+        GPIO.cleanup()
 
 if __name__ == "__main__":
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()

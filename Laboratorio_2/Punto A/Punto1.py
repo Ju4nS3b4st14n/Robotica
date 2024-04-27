@@ -86,7 +86,7 @@ class Ui_MainWindow(object):
         self.label_11 = QtWidgets.QLabel(self.centralwidget)
         self.label_11.setGeometry(QtCore.QRect(580, 420, 221, 151))
         self.label_11.setText("")
-        self.label_11.setPixmap(QtGui.QPixmap("../Robotica/Laboratorio_2/Imagenes/images.png"))
+        self.label_11.setPixmap(QtGui.QPixmap("Laboratorio_2/Imagenes/images.png"))
         self.label_11.setObjectName("label_11")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
