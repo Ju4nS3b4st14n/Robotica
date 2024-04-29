@@ -68,7 +68,7 @@ class Ui_MainWindow(object):
 
         Robot = DHRobot(R, name='Bender')
 
-        for i in range(0, 181, 10):
+        for i in range(0, 181, 20):
             q1 = np.deg2rad(0)
             self.label_6.setText(str(np.rad2deg(q1)))
             q2 = np.deg2rad(i)
@@ -79,7 +79,7 @@ class Ui_MainWindow(object):
 
             sleep(0.5)
             
-        for i in range(181, 0, 10):
+        for i in range(181, 0, -20):
             q1 = np.deg2rad(0)
             self.label_6.setText(str(np.rad2deg(q1)))
             q2 = np.deg2rad(i)
@@ -90,7 +90,7 @@ class Ui_MainWindow(object):
 
             sleep(0.5)
 
-        for i in range(0, 181, 10):
+        for i in range(0, 181, 20):
             q1 = np.deg2rad(i)
             self.label_6.setText(str(np.rad2deg(q1)))
             q2 = np.deg2rad(0)
@@ -101,7 +101,7 @@ class Ui_MainWindow(object):
 
             sleep(0.5)
 
-        for i in range(0, 181, 10):
+        for i in range(0, 181, 20):
             q1 = np.deg2rad(180)
             self.label_6.setText(str(np.rad2deg(q1)))
             q2 = np.deg2rad(i)
@@ -156,3 +156,6 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+
+
+
