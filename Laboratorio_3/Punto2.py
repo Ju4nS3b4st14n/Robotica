@@ -1,11 +1,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from roboticstoolbox import *
 import numpy as np
-from time import sleep
+import matplotlib
+matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+import RPi.GPIO as GPIO
+from time import sleep
 
 
 class Ui_MainWindow(object):
@@ -70,10 +73,22 @@ class Ui_MainWindow(object):
             self.label_6.setText(str(np.rad2deg(q1)))
             q2 = np.deg2rad(i)
             self.label_5.setText(str(np.rad2deg(q2)))
-
+            
+            self.move_robot(q1, q2)
             self.plot_robot(Robot, q1, q2)
 
-            sleep(0.1)
+            sleep(0.5)
+            
+        for i in range(181, 0, 10):
+            q1 = np.deg2rad(0)
+            self.label_6.setText(str(np.rad2deg(q1)))
+            q2 = np.deg2rad(i)
+            self.label_5.setText(str(np.rad2deg(q2)))
+
+            self.move_robot(q1, q2)
+            self.plot_robot(Robot, q1, q2)
+
+            sleep(0.5)
 
         for i in range(0, 181, 10):
             q1 = np.deg2rad(i)
@@ -81,9 +96,10 @@ class Ui_MainWindow(object):
             q2 = np.deg2rad(0)
             self.label_5.setText(str(np.rad2deg(q2)))
 
+            self.move_robot(q1, q2)
             self.plot_robot(Robot, q1, q2)
 
-            sleep(0.1)
+            sleep(0.5)
 
         for i in range(0, 181, 10):
             q1 = np.deg2rad(180)
@@ -91,8 +107,9 @@ class Ui_MainWindow(object):
             q2 = np.deg2rad(i)
             self.label_5.setText(str(np.rad2deg(q2)))
 
+            self.move_robot(q1, q2)
             self.plot_robot(Robot, q1, q2)
-            sleep(0.1)
+            sleep(0.5)
 
     def plot_robot(self, robot, q1, q2):
         fig = Figure()
@@ -106,6 +123,29 @@ class Ui_MainWindow(object):
         canvas = FigureCanvas(fig)
         layout = QtWidgets.QVBoxLayout(self.label_7)
         layout.addWidget(canvas)
+        
+    def move_robot(self, q1, q2):
+        
+        q1s = int(np.rad2deg(q1))
+        q2s = int(np.rad2deg(q2))
+
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(33, GPIO.OUT)
+        pulso_q1 = GPIO.PWM(33, 50)
+        pulso_q1.start(1.5)
+        grados_q1 = ((1.0/18.0) * q1s) + 2.5
+        pulso_q1.ChangeDutyCycle(grados_q1)
+        sleep(0.1)
+        pulso_q1.stop()
+        
+        GPIO.setup(35, GPIO.OUT)
+        pulso_q2 = GPIO.PWM(35, 50)
+        pulso_q2.start(1.5)
+        grados_q2 = ((1.0/18.0) * q2s) + 2.5
+        pulso_q2.ChangeDutyCycle(grados_q2)
+        sleep(0.1)
+        pulso_q2.stop()
+        GPIO.cleanup()
 
 if __name__ == "__main__":
     import sys
@@ -116,5 +156,3 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
-
