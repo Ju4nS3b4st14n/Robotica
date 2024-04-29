@@ -1,11 +1,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from roboticstoolbox import *
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtGui import QPixmap, QImage
+import cv2  # Importar OpenCV
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+from roboticstoolbox import *
+from spatialmath.base import *
+import math
+import numpy
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-import RPi.GPIO as GPIO
 from time import sleep
 
 
@@ -21,12 +24,6 @@ class Ui_MainWindow(object):
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(180, 70, 21, 25))
         self.label_2.setObjectName("label_2")
-        self.textEdit = QtWidgets.QTextEdit(self.centralwidget)
-        self.textEdit.setGeometry(QtCore.QRect(220, 40, 104, 25))
-        self.textEdit.setObjectName("textEdit")
-        self.textEdit_2 = QtWidgets.QTextEdit(self.centralwidget)
-        self.textEdit_2.setGeometry(QtCore.QRect(220, 70, 104, 25))
-        self.textEdit_2.setObjectName("textEdit_2")
         self.label_7 = QtWidgets.QWidget(self.centralwidget)
         self.label_7.setGeometry(QtCore.QRect(100, 140, 551, 371))
         self.label_7.setObjectName("label_7")
@@ -52,11 +49,6 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        self.textEdit.textChanged.connect(self.robot)
-        self.textEdit_2.textChanged.connect(self.robot)
-
-        self.selected_motor = None
-
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -65,88 +57,128 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "Articulación 1"))
         self.label_4.setText(_translate("MainWindow", "Articulación 2"))
 
-    def robot(self):
-        l1 = 6
-        l2 = 8
-        # Cinemática inversa
-        x = self.textEdit.toPlainText()
-        y = self.textEdit_2.toPlainText()
-        Px = int(x)
-        Py = int(y)
+        self.loadImage()
+        
+    
+    
+    def loadImage(self):
+       
+        # Leer la imagen con OpenCV
+        img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Chevrolet.jpg')
 
-        b = np.sqrt(Px ** 2 + Py ** 2)
-        # Theta 2
-        cos_theta2 = (b ** 2 - l2 ** 2 - l1 ** 2) / (2 * l1 * l2)
-        sen_theta2 = np.sqrt(1 - (cos_theta2) ** 2)
-        theta2 = np.arctan2(sen_theta2, cos_theta2)
+        # Obtener las dimensiones de la imagen original
+        # alto_original, ancho_original = img.shape[:2]
 
-        # Theta 1
-        alpha = np.arctan2(Py, Px)
-        phi = np.arctan2(l2 * sen_theta2, l1 + l2 * cos_theta2)
-        theta1 = alpha - phi
+        # # Definir el nuevo tamaño deseado de la imagen
+        # nuevo_ancho = 14  # Nuevo ancho de la imagen
+        # nuevo_alto = int(alto_original * (nuevo_ancho / ancho_original))  # Mantener la proporción
 
-        q1 = theta1
-        self.label_6.setText(str(np.rad2deg(q1)))
-        q2 = theta2
-        self.label_5.setText(str(np.rad2deg(q2)))
+        # # Redimensionar la imagen
+        # img_redimensionada = cv2.resize(img, (nuevo_ancho, nuevo_alto))
+
+        # Convertir la imagen a escala de grises
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)     
+        edges = cv2.Canny(gray, 100, 200)
+
+        # Encontrar contornos
+        contours, _ = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            
+        # Dibujar contornos en la imagen original
+        cv2.drawContours(img, contours, -1, (0, 255, 0), 3)
+
+        # Obtener contornos
+        _, binaria = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+        contornos, _ = cv2.findContours(binaria, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+
+        coordenadas_x = []
+        coordenadas_y = []
+        
+        # Imprimir las coordenadas de los contornos
+        print(f"\n\nCoordenadas Logo\n\n")
+        for contour in contornos:
+            for punto in contour:
+                x, y = punto[0]
+                coordenadas_x.append(x)
+                coordenadas_y.append(y)
+                print(f"Coordenada: X={x}, Y={y}")
+
+            
+        # Convertir la imagen de vuelta a formato Qt
+        height, width, channels = img.shape
+        bytesPerLine = channels * width
+        qImg = QImage(img.data, width, height, bytesPerLine, QImage.Format_RGB888).rgbSwapped()
+            
+        pixmap = QPixmap.fromImage(qImg)
+        #self.label.setPixmap(pixmap)
+
+        self.robot(coordenadas_x, coordenadas_y)
+    
+    def robot(self, coordenadas_x, coordenadas_y):
+
+        l1 = 10
+        l2 = 10
 
         R = []
         R.append(RevoluteDH(d=0, alpha=0, a=l1, offset=0))
         R.append(RevoluteDH(d=0, alpha=0, a=l2, offset=0))
-
         Robot = DHRobot(R, name='Bender')
 
-        # self.selected_motor = 33
-        # self.selected_motor = 35
+        for x, y in zip(coordenadas_x, coordenadas_y):
+            # Cinemática inversa
+            Px = x*0.3/10
+            Py = y*0.3/10
+            print(f"Px {Px}, PY {Py}")
+            #sleep(2)
 
-        self.plot_robot(Robot, q1, q2)
+            b = math.sqrt(Px**2+Py**2)
+            # Theta 2
+            cos_theta2 = (b**2-l2**2-l1**2)/(2*l1*l2)
+            sen_theta2 = math.sqrt(1-(cos_theta2)**2)#(+)codo abajo y (-)codo arriba
+            theta2 = math.atan2(sen_theta2, cos_theta2)
+            print(f'theta 2 = {numpy.rad2deg(theta2):.4f}')
+            # Theta 1
+            alpha = math.atan2(Py,Px)
+            phi = math.atan2(l2*sen_theta2, l1+l2*cos_theta2)
+            theta1 = alpha - phi
+            print(f'theta 1 = {numpy.rad2deg(theta1):.4f}')
+            #-------------
+
+            q1 = theta1
+            q2 = theta2
+            self.label_6.setText(str(np.rad2deg(q1)))
+            self.label_5.setText(str(np.rad2deg(q2)))
+
+            self.plot_robot(Robot, q1, q2)
+
+            # print(Robot)
+
+            # Robot.teach([q1, q2], 'rpy/zyx', limits=[-30,30,-30,30,-30,30])
+
+            # #zlim([-15,30]);
+
+            # MTH = Robot.fkine([q1,q2])
+            # print(MTH)
+            # #print(f'Roll, Pitch, Yaw = {tr2rpy(MTH.R, 'deg', 'zyx')}')
 
     def plot_robot(self, robot, q1, q2):
-
         fig = Figure()
+        
         ax = fig.add_subplot(111, projection='3d')
         robot.plot([q1, q2], backend='pyplot', limits=[-20, 20, -20, 20, -20, 20])
         ax.set_xlim([-20, 20])
         ax.set_ylim([-20, 20])
         ax.set_zlim([-20, 20])
-
+        
         canvas = FigureCanvas(fig)
         layout = QtWidgets.QVBoxLayout(self.label_7)
         layout.addWidget(canvas)
 
-        self.move_robot(q1, q2)
-
-    def move_robot(self, q1, q2):
-
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(33, GPIO.OUT)
-        GPIO.setup(35, GPIO.OUT)
-        pulso_q1 = GPIO.PWM(33, 50)
-        pulso_q2 = GPIO.PWM(35, 50)
-        pulso_q1.start(1.5)
-        pulso_q2.start(1.5)
-
-        grados_q1 = ((1.0/18.0) * q1) + 2.5 
-        pulso_q1.ChangeDutyCycle(grados_q1)
-        sleep(0.01)
-        pulso_q1.stop()
-        GPIO.cleanup()
-
-        grados_q2 = ((1.0/18.0) * q2) + 2.5 
-        pulso_q2.ChangeDutyCycle(grados_q2)
-        sleep(0.01)
-        pulso_q2.stop()
-        GPIO.cleanup()
-
-
 if __name__ == "__main__":
     import sys
-
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
 
