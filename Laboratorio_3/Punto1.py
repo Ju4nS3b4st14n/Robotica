@@ -66,7 +66,10 @@ class Ui_MainWindow(object):
         l2 = 8
         # Cinemática inversa
         x = self.textEdit.toPlainText()
-        y = self.textEdit_2.toPlainText()
+        y = self.textEdit_2.toPlainText() 
+        if x == '' or y == '':
+            x = 14
+            y = 0  
         Px = int(x)
         Py = int(y)
 

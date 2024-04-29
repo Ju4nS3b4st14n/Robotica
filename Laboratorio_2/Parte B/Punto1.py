@@ -93,11 +93,11 @@ class Ui_MainWindow(object):
         pulso = GPIO.PWM(servo_pin, 50)
         pulso.start(1.5)
         
-        for i in range(0, angle):
-            grados = ((1.0/18.0) * i) + 2.5
-            pulso.ChangeDutyCycle(grados)
-            sleep(0.05)  # Agregar un pequeño retardo entre cada movimiento
-        sleep(2)
+        #for i in range(0, angle):
+        grados = ((1.0/18.0) * angle) + 2.5 
+        pulso.ChangeDutyCycle(grados)
+        #sleep(0.05)  # Agregar un pequeño retardo entre cada movimiento
+        sleep(0.01)
         pulso.stop()
         GPIO.cleanup()
 

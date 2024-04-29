@@ -7,39 +7,40 @@ from roboticstoolbox import *
 from spatialmath.base import *
 import math
 import numpy
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+from time import sleep
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 700)
+        MainWindow.resize(769, 837)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(110, 140, 591, 361))
+        self.label.setGeometry(QtCore.QRect(180, 40, 21, 25))
         self.label.setObjectName("label")
-        self.label.setScaledContents(True)
-        self.label_7 = QtWidgets.QLabel(self.centralwidget)
-        self.label_7.setGeometry(QtCore.QRect(50, 530, 160, 25))
+        self.label_2 = QtWidgets.QLabel(self.centralwidget)
+        self.label_2.setGeometry(QtCore.QRect(180, 70, 21, 25))
+        self.label_2.setObjectName("label_2")
+        self.label_7 = QtWidgets.QWidget(self.centralwidget)
+        self.label_7.setGeometry(QtCore.QRect(100, 140, 551, 371))
         self.label_7.setObjectName("label_7")
-        self.label_8 = QtWidgets.QLabel(self.centralwidget)
-        self.label_8.setGeometry(QtCore.QRect(50, 570, 160, 25))
-        self.label_8.setObjectName("label_8")
-        self.label_9 = QtWidgets.QLabel(self.centralwidget)
-        self.label_9.setGeometry(QtCore.QRect(50, 610, 160, 25))
-        self.label_9.setObjectName("label_9")
-        self.label_11 = QtWidgets.QLabel(self.centralwidget)
-        self.label_11.setGeometry(QtCore.QRect(50, 650, 160, 25))
-        self.label_11.setObjectName("label_11")
-        self.label_10 = QtWidgets.QLabel(self.centralwidget)
-        self.label_10.setGeometry(QtCore.QRect(530, 520, 221, 151))
-        self.label_10.setText("")
-        self.label_10.setPixmap(QtGui.QPixmap("../Robotica/Laboratorio_2/Imagenes/images.png"))
-        self.label_10.setObjectName("label_10")
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(330, 70, 151, 25))
-        self.pushButton.setObjectName("pushButton")
+        self.label_3 = QtWidgets.QLabel(self.centralwidget)
+        self.label_3.setGeometry(QtCore.QRect(396, 40, 101, 20))
+        self.label_3.setObjectName("label_3")
+        self.label_4 = QtWidgets.QLabel(self.centralwidget)
+        self.label_4.setGeometry(QtCore.QRect(396, 70, 101, 20))
+        self.label_4.setObjectName("label_4")
+        self.label_5 = QtWidgets.QLabel(self.centralwidget)
+        self.label_5.setGeometry(QtCore.QRect(510, 70, 67, 17))
+        self.label_5.setText("")
+        self.label_5.setObjectName("label_5")
+        self.label_6 = QtWidgets.QLabel(self.centralwidget)
+        self.label_6.setGeometry(QtCore.QRect(510, 40, 67, 17))
+        self.label_6.setText("")
+        self.label_6.setObjectName("label_6")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -47,39 +48,36 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        
-        self.pushButton.clicked.connect(self.loadImage)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Quinto punto"))
-        self.pushButton.setText(_translate("MainWindow", "Cargar imagen"))
-        self.label_7.setText(_translate("MainWindow", "Juan Sebastian Torres"))
-        self.label_8.setText(_translate("MainWindow", "Juan Camilo Alberto"))
-        self.label_9.setText(_translate("MainWindow", "Sergio Andres Lopez"))
-        self.label_11.setText(_translate("MainWindow", "Steven Santana"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.label.setText(_translate("MainWindow", "X"))
+        self.label_2.setText(_translate("MainWindow", "Y"))
+        self.label_3.setText(_translate("MainWindow", "Articulación 1"))
+        self.label_4.setText(_translate("MainWindow", "Articulación 2"))
 
-        #coordenadas_x, coordenadas_y = loadImage()
+        self.loadImage()
         
     
     
     def loadImage(self):
        
         # Leer la imagen con OpenCV
-        img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Mercedes.jpg')
+        img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Chevrolet.jpg')
 
         # Obtener las dimensiones de la imagen original
-        alto_original, ancho_original = img.shape[:2]
+        # alto_original, ancho_original = img.shape[:2]
 
-        # Definir el nuevo tamaño deseado de la imagen
-        nuevo_ancho = 14  # Nuevo ancho de la imagen
-        nuevo_alto = int(alto_original * (nuevo_ancho / ancho_original))  # Mantener la proporción
+        # # Definir el nuevo tamaño deseado de la imagen
+        # nuevo_ancho = 14  # Nuevo ancho de la imagen
+        # nuevo_alto = int(alto_original * (nuevo_ancho / ancho_original))  # Mantener la proporción
 
-        # Redimensionar la imagen
-        img_redimensionada = cv2.resize(img, (nuevo_ancho, nuevo_alto))
+        # # Redimensionar la imagen
+        # img_redimensionada = cv2.resize(img, (nuevo_ancho, nuevo_alto))
 
         # Convertir la imagen a escala de grises
-        gray = cv2.cvtColor(img_redimensionada, cv2.COLOR_BGR2GRAY)     
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)     
         edges = cv2.Canny(gray, 100, 200)
 
         # Encontrar contornos
@@ -111,22 +109,26 @@ class Ui_MainWindow(object):
         qImg = QImage(img.data, width, height, bytesPerLine, QImage.Format_RGB888).rgbSwapped()
             
         pixmap = QPixmap.fromImage(qImg)
-        self.label.setPixmap(pixmap)
+        #self.label.setPixmap(pixmap)
 
-        self.cinematica(coordenadas_x, coordenadas_y)
-        #return coordenadas_x, 
-    #coordenadas_x, coordenadas_y = loadImage()
+        self.robot(coordenadas_x, coordenadas_y)
     
-    def cinematica(self, coordenadas_x, coordenadas_y):
+    def robot(self, coordenadas_x, coordenadas_y):
 
         l1 = 10
         l2 = 10
 
+        R = []
+        R.append(RevoluteDH(d=0, alpha=0, a=l1, offset=0))
+        R.append(RevoluteDH(d=0, alpha=0, a=l2, offset=0))
+        Robot = DHRobot(R, name='Bender')
+
         for x, y in zip(coordenadas_x, coordenadas_y):
             # Cinemática inversa
-            Px = x
-            Py = y
-            print(x,y)
+            Px = x*0.3/10
+            Py = y*0.3/10
+            print(f"Px {Px}, PY {Py}")
+            #sleep(2)
 
             b = math.sqrt(Px**2+Py**2)
             # Theta 2
@@ -143,21 +145,33 @@ class Ui_MainWindow(object):
 
             q1 = theta1
             q2 = theta2
+            self.label_6.setText(str(np.rad2deg(q1)))
+            self.label_5.setText(str(np.rad2deg(q2)))
 
-            R = []
-            R.append(RevoluteDH(d=0, alpha=0, a=l1, offset=0))
-            R.append(RevoluteDH(d=0, alpha=0, a=l2, offset=0))
+            self.plot_robot(Robot, q1, q2)
 
-            Robot = DHRobot(R, name='Bender')
-            print(Robot)
+            # print(Robot)
 
-            Robot.teach([q1, q2], 'rpy/zyx', limits=[-30,30,-30,30,-30,30])
+            # Robot.teach([q1, q2], 'rpy/zyx', limits=[-30,30,-30,30,-30,30])
 
-            #zlim([-15,30]);
+            # #zlim([-15,30]);
 
-            MTH = Robot.fkine([q1,q2])
-            print(MTH)
-            #print(f'Roll, Pitch, Yaw = {tr2rpy(MTH.R, 'deg', 'zyx')}')
+            # MTH = Robot.fkine([q1,q2])
+            # print(MTH)
+            # #print(f'Roll, Pitch, Yaw = {tr2rpy(MTH.R, 'deg', 'zyx')}')
+
+    def plot_robot(self, robot, q1, q2):
+        fig = Figure()
+        
+        ax = fig.add_subplot(111, projection='3d')
+        robot.plot([q1, q2], backend='pyplot', limits=[-20, 20, -20, 20, -20, 20])
+        ax.set_xlim([-20, 20])
+        ax.set_ylim([-20, 20])
+        ax.set_zlim([-20, 20])
+        
+        canvas = FigureCanvas(fig)
+        layout = QtWidgets.QVBoxLayout(self.label_7)
+        layout.addWidget(canvas)
 
 if __name__ == "__main__":
     import sys
