@@ -1,8 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from roboticstoolbox import *
 import numpy as np
-import matplotlib
-matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -57,6 +55,8 @@ class Ui_MainWindow(object):
         self.textEdit.textChanged.connect(self.robot)
         self.textEdit_2.textChanged.connect(self.robot)
 
+        self.selected_motor = None
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -71,11 +71,6 @@ class Ui_MainWindow(object):
         # Cinemática inversa
         x = self.textEdit.toPlainText()
         y = self.textEdit_2.toPlainText()
-        
-        if x == '' or y == '' or x == '-' or y == '-' :
-            x = 14
-            y = 0
-            
         Px = int(x)
         Py = int(y)
 
@@ -94,10 +89,6 @@ class Ui_MainWindow(object):
         self.label_6.setText(str(np.rad2deg(q1)))
         q2 = theta2
         self.label_5.setText(str(np.rad2deg(q2)))
-        
-        if np.isnan(q1) or np.isnan(q2):
-            q1 = 0
-            q2 = 0
 
         R = []
         R.append(RevoluteDH(d=0, alpha=0, a=l1, offset=0))
@@ -107,7 +98,7 @@ class Ui_MainWindow(object):
 
         # self.selected_motor = 33
         # self.selected_motor = 35
-        self.move_robot(q1, q2)
+
         self.plot_robot(Robot, q1, q2)
 
     def plot_robot(self, robot, q1, q2):
@@ -123,27 +114,27 @@ class Ui_MainWindow(object):
         layout = QtWidgets.QVBoxLayout(self.label_7)
         layout.addWidget(canvas)
 
+        self.move_robot(q1, q2)
 
     def move_robot(self, q1, q2):
-        
-        q1s = int(np.rad2deg(q1))
-        q2s = int(np.rad2deg(q2))
 
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(33, GPIO.OUT)
-        pulso_q1 = GPIO.PWM(33, 50)
-        pulso_q1.start(1.5)
-        grados_q1 = ((1.0/18.0) * q1s) + 2.5
-        pulso_q1.ChangeDutyCycle(grados_q1)
-        sleep(0.1)
-        pulso_q1.stop()
-        
         GPIO.setup(35, GPIO.OUT)
+        pulso_q1 = GPIO.PWM(33, 50)
         pulso_q2 = GPIO.PWM(35, 50)
+        pulso_q1.start(1.5)
         pulso_q2.start(1.5)
-        grados_q2 = ((1.0/18.0) * q2s) + 2.5
+
+        grados_q1 = ((1.0/18.0) * q1) + 2.5 
+        pulso_q1.ChangeDutyCycle(grados_q1)
+        sleep(0.01)
+        pulso_q1.stop()
+        GPIO.cleanup()
+
+        grados_q2 = ((1.0/18.0) * q2) + 2.5 
         pulso_q2.ChangeDutyCycle(grados_q2)
-        sleep(0.1)
+        sleep(0.01)
         pulso_q2.stop()
         GPIO.cleanup()
 
@@ -157,6 +148,5 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
 
 
