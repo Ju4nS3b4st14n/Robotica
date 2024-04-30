@@ -1,45 +1,23 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# SPDX-FileCopyrightText: 2021 ladyada for Adafruit Industries
+# SPDX-License-Identifier: MIT
 
-# sudo apt-get install -y python-smbus
-# sudo apt-get install -y i2c-tools
-# sudo i2cdetect -y 1
+# Outputs a 50% duty cycle PWM single on the 0th channel.
+# Connect an LED and resistor in series to the pin
+# to visualize duty cycle changes and its impact on brightness.
 
-# sudo pip3 install adafruit-circuitpython-servokit
+import board
+from adafruit_pca9685 import PCA9685
 
-#Libraries
-import time    
-from adafruit_servokit import ServoKit   
-#Constants
-nbPCAServo=16 
-#Parameters
-MIN_IMP  =[500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500]
-MAX_IMP  =[2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500]
-MIN_ANG  =[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-MAX_ANG  =[180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180]
-#Objects
-pca = ServoKit(channels=16)
-# function init 
-def init():
-    for i in range(nbPCAServo):
-        pca.servo[i].set_pulse_width_range(MIN_IMP[i] , MAX_IMP[i])
-# function main 
-def main():
-    pcaScenario();
-# function pcaScenario 
-def pcaScenario():
-    """Scenario to test servo"""
-    for i in range(nbPCAServo):
-        for j in range(MIN_ANG[i],MAX_ANG[i],1):
-            print("Send angle {} to Servo {}".format(j,i))
-            pca.servo[i].angle = j
-            time.sleep(0.01)
-        for j in range(MAX_ANG[i],MIN_ANG[i],-1):
-            print("Send angle {} to Servo {}".format(j,i))
-            pca.servo[i].angle = j
-            time.sleep(0.01)
-        pca.servo[i].angle=None #disable channel
-        time.sleep(0.5)
-if __name__ == '__main__':
-    init()
-    main()
+# Create the I2C bus interface.
+i2c = board.I2C()  # uses board.SCL and board.SDA
+# i2c = busio.I2C(board.GP1, board.GP0)    # Pi Pico RP2040
+
+# Create a simple PCA9685 class instance.
+pca = PCA9685(i2c)
+
+# Set the PWM frequency to 60hz.
+pca.frequency = 60
+
+# Set the PWM duty cycle for channel zero to 50%. duty_cycle is 16 bits to match other PWM objects
+# but the PCA9685 will only actually give 12 bits of resolution.
+pca.channels[0].duty_cycle = 0x7FFF
