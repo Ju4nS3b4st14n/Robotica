@@ -131,6 +131,9 @@ class Ui_MainWindow(object):
             q1 = 0
             q2 = 0
 
+        if theta2 <= -numpy.pi:
+            theta2 = (2*numpy.pi)+theta2
+
         R = []
         R.append(RevoluteDH(d=0, alpha=0, a=l1, offset=0))
         R.append(RevoluteDH(d=0, alpha=0, a=l2, offset=0))
