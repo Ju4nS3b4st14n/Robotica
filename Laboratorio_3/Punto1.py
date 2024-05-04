@@ -122,6 +122,9 @@ class Ui_MainWindow(object):
         theta1 = alpha - phi
         print(f'theta 1 = {numpy.rad2deg(theta1):.4f}')
 
+        if theta1 <= -numpy.pi:
+            theta1 = (2*numpy.pi)+theta1
+
         q1 = theta1
         self.label_6.setText(str(numpy.rad2deg(q1)))
         q2 = theta2
@@ -130,9 +133,6 @@ class Ui_MainWindow(object):
         if numpy.isnan(q1) or numpy.isnan(q2):
             q1 = 0
             q2 = 0
-
-        if theta2 <= -numpy.pi:
-            theta2 = (2*numpy.pi)+theta2
 
         R = []
         R.append(RevoluteDH(d=0, alpha=0, a=l1, offset=0))
