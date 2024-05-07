@@ -2,13 +2,13 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
 from roboticstoolbox import *
 import numpy as np
+import math
 import matplotlib
 matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 from time import sleep
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -16,6 +16,12 @@ class Ui_MainWindow(object):
         MainWindow.resize(769, 750)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        self.textEdit = QtWidgets.QTextEdit(self.centralwidget)
+        self.textEdit.setGeometry(QtCore.QRect(220, 40, 104, 25))
+        self.textEdit.setObjectName("textEdit")
+        self.textEdit_2 = QtWidgets.QTextEdit(self.centralwidget)
+        self.textEdit_2.setGeometry(QtCore.QRect(220, 70, 104, 25))
+        self.textEdit_2.setObjectName("textEdit_2")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(180, 40, 21, 25))
         self.label.setObjectName("label")
@@ -59,138 +65,182 @@ class Ui_MainWindow(object):
         self.label_13.setText("")
         self.label_13.setPixmap(QtGui.QPixmap("../Robotica/Laboratorio_3/Imagenes/images.png"))
         self.label_13.setObjectName("label_13")
+        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton.setGeometry(QtCore.QRect(340, 118, 89, 25))
+        self.pushButton.setObjectName("pushButton")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
+        self.fig = Figure()
+        self.fig1 = self.fig.add_subplot(projection='3d')
+        self.fig1.set_xlabel('X')
+        self.fig1.set_ylabel('Y')
+        self.fig1.set_zlabel('Z')
+        self.fig1.set_xlim(-30, 30)
+        self.fig1.set_ylim(-30, 30)
+        self.fig1.set_zlim(-30, 30)
+
+        self.canvas = FigureCanvas(self.fig)
+        layout = QtWidgets.QVBoxLayout(self.label_7)
+        layout.addWidget(self.canvas)
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-        QTimer.singleShot(100, self.robot)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Punto 2"))
-        # # 
+        self.label.setText(_translate("MainWindow", "X"))
+        self.label_2.setText(_translate("MainWindow", "Y"))
+        self.label_3.setText(_translate("MainWindow", "Articulación 1"))
+        self.label_4.setText(_translate("MainWindow", "Articulación 2"))
         self.label_8.setText(_translate("MainWindow", "Juan Sebastian Torres"))
         self.label_9.setText(_translate("MainWindow", "Juan Camilo Alberto"))
         self.label_10.setText(_translate("MainWindow", "Sergio Andres Lopez"))
         self.label_11.setText(_translate("MainWindow", "Steven Santana"))
         self.label_12.setText(_translate("MainWindow", "Karen Mancilla"))
+        self.pushButton.setText(_translate("MainWindow", "Iniciar"))
 
-        #self.robot()
+        self.pushButton.clicked.connect(self.robot)
 
     def robot(self):
+
         l1 = 6
         l2 = 8
 
         n = 181
         d = np.zeros((3,n))
 
+        # Cinemática inversa
+        x = self.textEdit.toPlainText()
+        y = self.textEdit_2.toPlainText()
+
         R = []
         R.append(RevoluteDH(d=0, alpha=0, a=l1, offset=0))
         R.append(RevoluteDH(d=0, alpha=0, a=l2, offset=0))
 
         Robot = DHRobot(R, name='Bender')
-        fig1 = self.plot_fig()
 
-        for i in range(0, n, 20):
-            q1 = np.deg2rad(0)
-            # self.label_6.setText(str(np.rad2deg(q1)))
-            q2 = np.deg2rad(i)
-            # self.label_5.setText(str(np.rad2deg(q2)))
+        if x == '' or y == '':
 
-            MTH = Robot.fkine([q1,q2])
-            d[:,i] =  MTH.t 
-            self.move_robot(q1, q2)
-            self.plot_path(fig1, d, i)
-            self.plot_robot(Robot, q1, q2)
-            sleep(0.05)
+            for i in range(0, n, 20):
+                q1 = np.deg2rad(0)
+                q2 = np.deg2rad(i)
+
+                MTH = Robot.fkine([q1,q2])
+                d[:,i] =  MTH.t 
+                self.move_robot(q1, q2)
+                self.plot_path(d, i)
+                self.plot_robot(Robot, q1, q2)
+                sleep(0.05)
             
-        for i in range(n, 0, -20):
-            q1 = np.deg2rad(0)
-            # self.label_6.setText(str(np.rad2deg(q1)))
-            q2 = np.deg2rad(i)
-            # self.label_5.setText(str(np.rad2deg(q2)))
+            for i in range(n, 0, -20):
+                q1 = np.deg2rad(0)
+                q2 = np.deg2rad(i)
+
+                self.move_robot(q1, q2)
+                self.plot_robot(Robot, q1, q2)
+                sleep(0.05)
+
+            for i in range(0, n, 20):
+                q1 = np.deg2rad(i)
+                q2 = np.deg2rad(0)
+                
+                MTH = Robot.fkine([q1,q2])
+                d[:,i] =  MTH.t 
+                self.move_robot(q1, q2)
+                self.plot_path(d, i)
+                self.plot_robot(Robot, q1, q2)
+                sleep(0.05)
+
+            for i in range(0, n, 20):
+                q1 = np.deg2rad(180)
+                q2 = np.deg2rad(i)
+
+                MTH = Robot.fkine([q1,q2])
+                d[:,i] =  MTH.t 
+                self.move_robot(q1, q2)
+                self.plot_path(d, i)
+                self.plot_robot(Robot, q1, q2)
+                sleep(0.05)
+
+        if x != '' and y != '':
+
+            Px = int(x)
+            Py = int(y)
+
+            b = math.sqrt(Px**2+Py**2)
+            # Theta 2
+            cos_theta2 = (b**2-l2**2-l1**2)/(2*l1*l2)
+            sen_theta2 = math.sqrt(1-(cos_theta2)**2)#(+)codo abajo y (-)codo arriba
+            theta2 = math.atan2(sen_theta2, cos_theta2)
+            # Theta 1
+            alpha = math.atan2(Py,Px)
+            phi = math.atan2(l2*sen_theta2, l1+l2*cos_theta2)
+            theta1 = alpha - phi
+
+            if theta1 <= -np.pi:
+                theta1 = (2*np.pi)+theta1        
+
+            q1 = theta1
+            q2 = theta2
+        
+            if np.isnan(q1) or np.isnan(q2):
+                q1 = 0
+                q2 = 0
+
+            if q2 <= -np.pi:
+                q2 = (2*np.pi)+q2
+                
+            if np.isnan(q1) or np.isnan(q2):
+                q1 = 0
+                q2 = 0
 
             self.move_robot(q1, q2)
-            self.plot_robot(Robot, q1, q2)
-            sleep(0.05)
+            self.plot_path1(Px, Py)
+            self.plot_robot(Robot, q1, q2)  
 
-        for i in range(0, n, 20):
-            q1 = np.deg2rad(i)
-            # self.label_6.setText(str(np.rad2deg(q1)))
-            q2 = np.deg2rad(0)
-            # self.label_5.setText(str(np.rad2deg(q2)))
-
-            MTH = Robot.fkine([q1,q2])
-            d[:,i] =  MTH.t 
-            self.move_robot(q1, q2)
-            self.plot_path(fig1, d, i)
-            self.plot_robot(Robot, q1, q2)
-            sleep(0.05)
-
-        for i in range(0, n, 20):
-            q1 = np.deg2rad(180)
-            # self.label_6.setText(str(np.rad2deg(q1)))
-            q2 = np.deg2rad(i)
-            # self.label_5.setText(str(np.rad2deg(q2)))
-
-            MTH = Robot.fkine([q1,q2])
-            d[:,i] =  MTH.t 
-            self.move_robot(q1, q2)
-            self.plot_path(fig1, d, i)
-            self.plot_robot(Robot, q1, q2)
-            sleep(0.05)
-
+            
     def plot_robot(self, robot, q1, q2):
-
+        
+        self.label_5.setText(str(np.rad2deg(q2)))
+        self.label_6.setText(str(np.rad2deg(q1)))
         robot.plot([q1, q2], backend='pyplot', limits=[-20, 20, -20, 20, -20, 20])
 
-    def plot_path(self, fig1, d, i):
-        fig1.plot(d[0,i],d[1,i],d[2,i],'.b')
+    def plot_path(self, d, i):
+
+        self.fig1.plot(d[0,i],d[1,i],d[2,i],'.b')
         self.canvas.draw()
 
-    def plot_fig(self):
+    def plot_path1(self, x, y):
 
-        fig = Figure()
-        fig1 = fig.add_subplot(projection='3d')
-        fig1.set_xlabel('X')
-        fig1.set_ylabel('Y')
-        fig1.set_zlabel('Z')
-        fig1.set_xlim(-30, 30)
-        fig1.set_ylim(-30, 30)
-        fig1.set_zlim(-30, 30)
-
-        self.canvas = FigureCanvas(fig)
-        layout = QtWidgets.QVBoxLayout(self.label_7)
-        layout.addWidget(self.canvas)
-        
-        return fig1
+        self.fig1.plot(x, y, 0,'.b')
+        self.canvas.draw()
         
     def move_robot(self, q1, q2):
         
         q1s = int(np.rad2deg(q1))
         q2s = int(np.rad2deg(q2))
 
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(33, GPIO.OUT)
-        pulso_q1 = GPIO.PWM(33, 50)
-        pulso_q1.start(1.5)
-        grados_q1 = ((1.0/18.0) * q1s) + 2.5
-        pulso_q1.ChangeDutyCycle(grados_q1)
-        sleep(0.1)
-        pulso_q1.stop()
+    #     GPIO.setmode(GPIO.BOARD)
+    #     GPIO.setup(33, GPIO.OUT)
+    #     pulso_q1 = GPIO.PWM(33, 50)
+    #     pulso_q1.start(1.5)
+    #     grados_q1 = ((1.0/18.0) * q1s) + 2.5
+    #     pulso_q1.ChangeDutyCycle(grados_q1)
+    #     sleep(0.1)
+    #     pulso_q1.stop()
         
-        GPIO.setup(35, GPIO.OUT)
-        pulso_q2 = GPIO.PWM(35, 50)
-        pulso_q2.start(1.5)
-        grados_q2 = ((1.0/18.0) * q2s) + 2.5
-        pulso_q2.ChangeDutyCycle(grados_q2)
-        sleep(0.1)
-        pulso_q2.stop()
-        GPIO.cleanup()
+    #     GPIO.setup(35, GPIO.OUT)
+    #     pulso_q2 = GPIO.PWM(35, 50)
+    #     pulso_q2.start(1.5)
+    #     grados_q2 = ((1.0/18.0) * q2s) + 2.5
+    #     pulso_q2.ChangeDutyCycle(grados_q2)
+    #     sleep(0.1)
+    #     pulso_q2.stop()
+    #     GPIO.cleanup()
 
 if __name__ == "__main__":
     import sys
