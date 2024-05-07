@@ -1,17 +1,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
 from roboticstoolbox import *
+import numpy as np
 import numpy
 import math
 import matplotlib
 matplotlib.use('Qt5Agg')
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-import RPi.GPIO as GPIO
 from time import sleep
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -19,20 +16,20 @@ class Ui_MainWindow(object):
         MainWindow.resize(769, 750)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(180, 40, 21, 25))
-        self.label.setObjectName("label")
-        self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(180, 70, 21, 25))
-        self.label_2.setObjectName("label_2")
         self.textEdit = QtWidgets.QTextEdit(self.centralwidget)
         self.textEdit.setGeometry(QtCore.QRect(220, 40, 104, 25))
         self.textEdit.setObjectName("textEdit")
         self.textEdit_2 = QtWidgets.QTextEdit(self.centralwidget)
         self.textEdit_2.setGeometry(QtCore.QRect(220, 70, 104, 25))
         self.textEdit_2.setObjectName("textEdit_2")
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(180, 40, 21, 25))
+        self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(self.centralwidget)
+        self.label_2.setGeometry(QtCore.QRect(180, 70, 21, 25))
+        self.label_2.setObjectName("label_2")
         self.label_7 = QtWidgets.QWidget(self.centralwidget)
-        self.label_7.setGeometry(QtCore.QRect(100, 140, 551, 371))
+        self.label_7.setGeometry(QtCore.QRect(100, 100, 551, 371))
         self.label_7.setObjectName("label_7")
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
         self.label_3.setGeometry(QtCore.QRect(396, 40, 101, 20))
@@ -75,7 +72,6 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
         QTimer.singleShot(100, self.robot)
 
     def retranslateUi(self, MainWindow):
@@ -91,13 +87,18 @@ class Ui_MainWindow(object):
         self.label_11.setText(_translate("MainWindow", "Steven Santana"))
         self.label_12.setText(_translate("MainWindow", "Karen Mancilla"))
 
+
         self.textEdit.textChanged.connect(self.robot)
         self.textEdit_2.textChanged.connect(self.robot)
 
     def robot(self):
 
         l1 = 6
-        l2 = 8        
+        l2 = 8
+
+        n = 181
+        d = np.zeros((3,n))
+
 
         # Cinemática inversa
         x = self.textEdit.toPlainText()
@@ -193,16 +194,15 @@ class Ui_MainWindow(object):
         pulso_q2.stop()
         GPIO.cleanup()
 
+    def plot_path1(self, x, y):
+        self.fig1.plot([x], [y], [0], '.b')
+        self.canvas.draw()
 
 if __name__ == "__main__":
     import sys
-
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
-
-

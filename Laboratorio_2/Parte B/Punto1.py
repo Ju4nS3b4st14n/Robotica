@@ -96,10 +96,17 @@ class Ui_MainWindow(object):
         pulso.start(1.5)
         
         #for i in range(0, angle):
+<<<<<<< HEAD
+        grados = ((1.0/18.0) * angle) + 2.5 
+        pulso.ChangeDutyCycle(grados)
+        #sleep(0.05)  # Agregar un pequeño retardo entre cada movimiento
+        sleep(0.01)
+=======
         grados = ((1.0/18.0) * angle) + 2.5
         pulso.ChangeDutyCycle(grados)
         sleep(0.01)  # Agregar un pequeño retardo entre cada movimiento
         #sleep(2)
+>>>>>>> 87a2439c302ec776a89996e7dfa1a2077de74160
         pulso.stop()
         GPIO.cleanup()
 
