@@ -215,7 +215,7 @@ class Ui_MainWindow(object):
         # Define las rutas de las imágenes según la opción seleccionada
         if seleccion == "Chevrolet":
             # Leer la imagen con OpenCV
-            img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Chevrolet.png')
+            img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Chevrolet.jpg')
         elif seleccion == "Renault":
             img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Renault.png')
         elif seleccion == "Mercedes":
@@ -245,8 +245,8 @@ class Ui_MainWindow(object):
     def robot_cars(self, coordenadas_x, coordenadas_y, seleccion):
         # Restringir el número de coordenadas a procesar
         if seleccion == "Chevrolet":
-            coordenadas_x = coordenadas_x[:184]
-            coordenadas_y = coordenadas_y[:184]
+            coordenadas_x = coordenadas_x[:94]
+            coordenadas_y = coordenadas_y[:94]
 
         elif seleccion == "Renault":
             coordenadas_x = coordenadas_x[:710]
@@ -274,8 +274,8 @@ class Ui_MainWindow(object):
             x, y = coordenadas_x[i], coordenadas_y[i]
             # Cinemática inversa
             if seleccion == "Chevrolet":
-                Px = x/50-5
-                Py = y/50+7
+                Px = x/70-5
+                Py = y/70+7
             elif seleccion == "Renault":
                 Px = x/50-2
                 Py = y/50+6
