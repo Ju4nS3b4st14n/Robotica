@@ -233,6 +233,9 @@ class Ui_MainWindow(object):
 
         self.go_semiauto.clicked.connect(self.semi_auto)
 
+        self.plot_robot_figure()
+
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -253,9 +256,6 @@ class Ui_MainWindow(object):
         self.label_10.setText(_translate("MainWindow", "ESTUDIANTES"))
 
     def manual(self):
-        l1 = 4
-        l2 = 8
-        l3 = 18
 
         theta1 = self.scroll_x.value()
         theta2 = self.scrolly.value()
@@ -265,20 +265,11 @@ class Ui_MainWindow(object):
         q2 = int(numpy.deg2rad(theta2))
         q3 = int(numpy.deg2rad(theta3))
 
+        self.plot_robot(q1, q2, q3)
 
-        R = []
-        R.append(RevoluteDH(d=l1, alpha=numpy.pi/2, a=0, offset=0))
-        R.append(RevoluteDH(d=0, alpha=0, a=l2, offset=0))
-        R.append(RevoluteDH(d=0, alpha=0, a=l3, offset=0))
+    def plot_robot(self, q1, q2, q3):
 
-        Robot = DHRobot(R, name='Bender')
-        #print(Robot)
-
-        self.plot_robot(Robot, q1, q2, q3)
-
-    def plot_robot(self, Robot, q1, q2, q3):
-
-        Robot.plot([q1, q2, q3], backend='pyplot', limits=[-30, 30, -30, 30, -30, 30])
+        self.Robot.plot([q1, q2, q3], backend='pyplot', limits=[-30, 30, -30, 30, -30, 30])
 
     def semi_auto(self):
 
@@ -327,7 +318,6 @@ class Ui_MainWindow(object):
 
         print(f'theta 2 = {numpy.rad2deg(theta2):.4f}')
         #-------------
-
         q1 = theta1
         q2 = theta2
         q3 = theta3
@@ -337,19 +327,25 @@ class Ui_MainWindow(object):
             q2 = 0
             q3 = 0
 
-        R = []
-        R.append(RevoluteDH(d=l1, alpha=numpy.pi/2, a=0, offset=0))
-        R.append(RevoluteDH(d=0, alpha=0, a=l2, offset=0))
-        R.append(RevoluteDH(d=0, alpha=0, a=l3, offset=0))
-
-        Robot = DHRobot(R, name='Bender')
-
-        self.plot_robot(Robot, q1, q2, q3)
+        self.plot_robot(q1, q2, q3)
 
 
     # def open_grypper(self):
 
     # def close_grypper(self):
+
+    def plot_robot_figure(self):
+
+        l1 = 4
+        l2 = 8
+        l3 = 18
+
+        R = []
+        R.append(RevoluteDH(d=l1, alpha=numpy.pi/2, a=0, offset=0))
+        R.append(RevoluteDH(d=0, alpha=0, a=l2, offset=0))
+        R.append(RevoluteDH(d=0, alpha=0, a=l3, offset=0))
+
+        self.Robot = DHRobot(R, name='Bender')
 
 
 if __name__ == "__main__":

@@ -221,7 +221,7 @@ class Ui_MainWindow(object):
         elif seleccion == "Mercedes":
             img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Mercedes.png')
         elif seleccion == "Kia":
-            img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Kia.jpg')
+            img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Kia2.jpg')
 
         # Convertir la imagen a escala de grises
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)     
@@ -242,13 +242,26 @@ class Ui_MainWindow(object):
 
         self.robot_cars(coordenadas_x, coordenadas_y, seleccion)
 
-    def robot_cars(self, coordenadas_x, coordenadas_y, seleccion, num_coordenadas= 184):
+    def robot_cars(self, coordenadas_x, coordenadas_y, seleccion):
         # Restringir el número de coordenadas a procesar
-        coordenadas_x = coordenadas_x[:num_coordenadas]
-        coordenadas_y = coordenadas_y[:num_coordenadas]
+        if seleccion == "Chevrolet":
+            coordenadas_x = coordenadas_x[:184]
+            coordenadas_y = coordenadas_y[:184]
 
-        l1 = 10
-        l2 = 10
+        elif seleccion == "Renault":
+            coordenadas_x = coordenadas_x[:710]
+            coordenadas_y = coordenadas_y[:710]
+
+        elif seleccion == "Mercedes":
+            coordenadas_x = coordenadas_x[:820]
+            coordenadas_y = coordenadas_y[:820]
+
+        elif seleccion == "Kia":
+            coordenadas_x = coordenadas_x[:446]
+            coordenadas_y = coordenadas_y[:446]
+
+        l1 = 6
+        l2 = 8
 
         d = np.zeros((3, len(coordenadas_x)))
 
@@ -261,17 +274,17 @@ class Ui_MainWindow(object):
             x, y = coordenadas_x[i], coordenadas_y[i]
             # Cinemática inversa
             if seleccion == "Chevrolet":
-                Px = x/50-4
-                Py = y/50+5
+                Px = x/50-5
+                Py = y/50+7
             elif seleccion == "Renault":
-                Px = x/50-4
-                Py = y/50+4
+                Px = x/50-2
+                Py = y/50+6
             elif seleccion == "Mercedes":
-                Px = x/60-4
-                Py = y/60+4
+                Px = x/60-2
+                Py = y/60+6
             elif seleccion == "Kia":
-                Px = x/80-4
-                Py = y/80+4
+                Px = x/70-4
+                Py = y/70+6
 
             b = math.sqrt(Px**2+Py**2)
             # Theta 2
