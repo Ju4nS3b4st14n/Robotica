@@ -84,8 +84,8 @@ class Ui_MainWindow(object):
         self.fig1.set_ylabel('Y')
         self.fig1.set_zlabel('Z')
         self.fig1.set_xlim(-10, 10)
-        self.fig1.set_ylim(-10, 10)
-        self.fig1.set_zlim(-10, 10)
+        self.fig1.set_ylim(0, 10)
+        self.fig1.set_zlim(0, 10)
 
         self.canvas = FigureCanvas(self.fig)
         layout = QtWidgets.QVBoxLayout(self.label_7)
@@ -216,22 +216,15 @@ class Ui_MainWindow(object):
         if seleccion == "Chevrolet":
             # Leer la imagen con OpenCV
             img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Chevrolet.png')
-
         elif seleccion == "Renault":
             img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Renault.png')
-            
         elif seleccion == "Mercedes":
             img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Mercedes.png')
-
         elif seleccion == "Kia":
-            img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Kia.png')
+            img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Kia.jpg')
 
         # Convertir la imagen a escala de grises
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)     
-        edges = cv2.Canny(gray, 100, 200)
-
-        # Encontrar contornos
-        contours, _ = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         # Obtener contornos
         _, binaria = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
@@ -241,17 +234,18 @@ class Ui_MainWindow(object):
         coordenadas_y = []
         
         # Imprimir las coordenadas de los contornos
-        
         for contour in contornos:
             for punto in contour:
                 x, y = punto[0]
                 coordenadas_x.append(x)
                 coordenadas_y.append(y)
-                # print(f"Coordenada: X={x}, Y={y}")
 
         self.robot_cars(coordenadas_x, coordenadas_y, seleccion)
 
-    def robot_cars(self, coordenadas_x, coordenadas_y, seleccion):
+    def robot_cars(self, coordenadas_x, coordenadas_y, seleccion, num_coordenadas= 184):
+        # Restringir el número de coordenadas a procesar
+        coordenadas_x = coordenadas_x[:num_coordenadas]
+        coordenadas_y = coordenadas_y[:num_coordenadas]
 
         l1 = 10
         l2 = 10
@@ -263,7 +257,8 @@ class Ui_MainWindow(object):
         R.append(RevoluteDH(d=0, alpha=0, a=l2, offset=0))
         Robot = DHRobot(R, name='Bender')
 
-        for i, (x, y) in enumerate(zip(coordenadas_x, coordenadas_y)):
+        for i in range(len(coordenadas_x)):
+            x, y = coordenadas_x[i], coordenadas_y[i]
             # Cinemática inversa
             if seleccion == "Chevrolet":
                 Px = x/50-4
@@ -283,12 +278,12 @@ class Ui_MainWindow(object):
             cos_theta2 = (b**2-l2**2-l1**2)/(2*l1*l2)
             sen_theta2 = math.sqrt(1-(cos_theta2)**2)#(+)codo abajo y (-)codo arriba
             theta2 = math.atan2(sen_theta2, cos_theta2)
-            # print(f'theta 2 = {numpy.rad2deg(theta2):.4f}')
+        
             # Theta 1
             alpha = math.atan2(Py,Px)
             phi = math.atan2(l2*sen_theta2, l1+l2*cos_theta2)
             theta1 = alpha - phi
-            # print(f'theta 1 = {numpy.rad2deg(theta1):.4f}')
+        
             if theta1 <= -np.pi:
                 theta1 = (2*np.pi)+theta1 
 
@@ -302,8 +297,10 @@ class Ui_MainWindow(object):
             d[:, i] =  MTH.t 
 
             self.plot_path4(d, i)
+            #self.move_robot(self, q1, q2)
             #self.plot_robot(Robot, q1, q2)
-            
+
+
     def plot_robot(self, robot, q1, q2):
         
         self.label_5.setText(str(np.rad2deg(q2)))

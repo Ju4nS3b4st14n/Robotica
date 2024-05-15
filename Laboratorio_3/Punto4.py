@@ -294,6 +294,7 @@ class Ui_MainWindow(object):
             d[:, i] =  MTH.t 
 
             self.plot_path4(d, i)
+            self.move_robot(self, q1, q2)
             #self.plot_robot(Robot, q1, q2)
             
     def plot_robot(self, robot, q1, q2):
