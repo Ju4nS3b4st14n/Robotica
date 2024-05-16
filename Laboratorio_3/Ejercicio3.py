@@ -24,6 +24,9 @@ class Ui_MainWindow(object):
         self.textEdit_2 = QtWidgets.QTextEdit(self.centralwidget)
         self.textEdit_2.setGeometry(QtCore.QRect(220, 70, 104, 25))
         self.textEdit_2.setObjectName("textEdit_2")
+        self.textEdit_3 = QtWidgets.QTextEdit(self.centralwidget)
+        self.textEdit_3.setGeometry(QtCore.QRect(290, 580, 191, 25))
+        self.textEdit_3.setObjectName("textEdit")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(180, 40, 21, 25))
         self.label.setObjectName("label")
@@ -70,6 +73,9 @@ class Ui_MainWindow(object):
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(340, 118, 89, 25))
         self.pushButton.setObjectName("pushButton")
+        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_2.setGeometry(QtCore.QRect(340, 610, 89, 25))
+        self.pushButton_2.setObjectName("pushButton")
         self.comboBox = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox.setGeometry(QtCore.QRect(290, 500, 191, 25))
         self.comboBox.setObjectName("comboBox")
@@ -110,6 +116,7 @@ class Ui_MainWindow(object):
         self.label_11.setText(_translate("MainWindow", "Steven Santana"))
         self.label_12.setText(_translate("MainWindow", "Karen Mancilla"))
         self.pushButton.setText(_translate("MainWindow", "Iniciar"))
+        self.pushButton_2.setText(_translate("MainWindow", "Iniciar"))
         self.comboBox.addItem("Selecciona un logo")
         self.comboBox.addItem("Chevrolet")
         self.comboBox.addItem("Renault")
@@ -121,9 +128,9 @@ class Ui_MainWindow(object):
         self.comboBox_2.addItem("CAMILO")
         self.comboBox_2.addItem("KAREN")
         self.comboBox_2.addItem("STEVEN")
-        
 
         self.pushButton.clicked.connect(self.robot)
+        self.pushButton_2.clicked.connect(self.Names)
         self.comboBox.currentTextChanged.connect(self.cars)
         self.comboBox_2.currentTextChanged.connect(self.Names)
 
@@ -355,7 +362,9 @@ class Ui_MainWindow(object):
         'Z': [[2, 0], [0, 0], [2, 5], [0, 5]]
         }
 
-        nombre = palabra
+        nombre = self.textEdit_3.toPlainText()
+        if nombre != '':
+            palabra = nombre
         print(nombre)
 
         coordenadas_x = []
