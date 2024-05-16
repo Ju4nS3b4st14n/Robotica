@@ -513,7 +513,7 @@ class Graficar():
     def Nombres(): 
 
         # Definir los puntos para cada letra
-        letra_S = [[7, 0], [1+7, 0], [1+7, 0.5], [7, 0.5], [7, 1], [8, 1]]
+        letra_S = [[7, 0], [8, 0], [8, 0.5], [7, 0.5], [7, 1], [8, 1]]
         letra_e = [[3+7, 0], [2+7, 0], [2+7, 0.5], [3+7, 0.5], [2+7, 0.5],[2+7, 1],[3+7, 1]]
         letra_r = [[4+7, 0], [4+7, 1], [5+7, 1], [5+7, 0.5], [4+7, 0.5],[5+7, 0]]
         letra_g = [[7+7, 1], [6+7, 1], [6+7, 0], [7+7, 0], [7+7, 0.5], [6+7, 0.5]]
@@ -583,5 +583,5 @@ coordenadas = Coordenadas(x, y, z)
 #Graficar.FuncionTransferencia()    ##Punto 2
 #Graficar.CargaDescarga()           ##Punto 3
 #Graficar.Vectores()                ##Punto 4
-#Graficar.Nombres()                 ##Punto 5
+Graficar.Nombres()                 ##Punto 5
 #Graficar.Imagen()                  ##Punto 6 para graficar, hay que descomentar la imagen que se quiera graficar
