@@ -73,6 +73,9 @@ class Ui_MainWindow(object):
         self.comboBox = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox.setGeometry(QtCore.QRect(290, 500, 191, 25))
         self.comboBox.setObjectName("comboBox")
+        self.comboBox_2 = QtWidgets.QComboBox(self.centralwidget)
+        self.comboBox_2.setGeometry(QtCore.QRect(290, 550, 191, 25))
+        self.comboBox_2.setObjectName("comboBox_2")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -112,10 +115,17 @@ class Ui_MainWindow(object):
         self.comboBox.addItem("Renault")
         self.comboBox.addItem("Mercedes")
         self.comboBox.addItem("Kia")
+        self.comboBox_2.addItem("Selecciona un nombre")
+        self.comboBox_2.addItem("SERGIO")
+        self.comboBox_2.addItem("JUAN")
+        self.comboBox_2.addItem("CAMILO")
+        self.comboBox_2.addItem("KAREN")
+        self.comboBox_2.addItem("STEVEN")
         
 
         self.pushButton.clicked.connect(self.robot)
         self.comboBox.currentTextChanged.connect(self.cars)
+        self.comboBox_2.currentTextChanged.connect(self.Names)
 
     def robot(self):
 
@@ -275,7 +285,7 @@ class Ui_MainWindow(object):
             # Cinemática inversa
             if seleccion == "Chevrolet":
                 Px = x/70-5
-                Py = y/70+7
+                Py = y/70+6
             elif seleccion == "Renault":
                 Px = x/50-2
                 Py = y/50+6
@@ -285,6 +295,102 @@ class Ui_MainWindow(object):
             elif seleccion == "Kia":
                 Px = x/70-4
                 Py = y/70+6
+
+            b = math.sqrt(Px**2+Py**2)
+            # Theta 2
+            cos_theta2 = (b**2-l2**2-l1**2)/(2*l1*l2)
+            sen_theta2 = math.sqrt(1-(cos_theta2)**2)#(+)codo abajo y (-)codo arriba
+            theta2 = math.atan2(sen_theta2, cos_theta2)
+        
+            # Theta 1
+            alpha = math.atan2(Py,Px)
+            phi = math.atan2(l2*sen_theta2, l1+l2*cos_theta2)
+            theta1 = alpha - phi
+        
+            if theta1 <= -np.pi:
+                theta1 = (2*np.pi)+theta1 
+
+            q1 = theta1
+            q2 = theta2
+
+            if q2 <= -np.pi:
+                q2 = (2*np.pi)+q2
+
+            MTH = Robot.fkine([q1,q2])
+            d[:, i] =  MTH.t 
+
+            self.plot_path4(d, i)
+            #self.move_robot(self, q1, q2)
+            #self.plot_robot(Robot, q1, q2)
+
+    def Names(self, palabra):
+        
+        coordenadas_letras = {
+        # Definir los puntos para cada letra
+        'A': [[0, 0], [0, 5], [2, 5], [2, 0], [2, 2.5],[0, 2.5]],
+        'B': [[0, 0], [0, 5], [2, 5], [2, 2.5], [0, 2.5],[2, 2.5],[2,0],[0,0]],
+        'C': [[2, 0], [0, 0], [0, 5], [2, 5]],
+        'D': [[0, 0], [0, 5], [2, 5], [2, 0], [0, 0]],
+        'E': [[2, 0], [0, 0], [0, 2.5], [1, 2.5],[0,2.5],[0,5],[2,5]],
+        'F': [[0, 0], [0, 2.5], [1, 2.5],[0,2.5],[0,5],[2,5]],
+        'G': [[1, 2.5], [2, 2.5], [2, 0], [0, 0],[0,5],[2,5]],
+        'H': [[0, 0], [0, 5], [0, 2.5], [2, 2.5],[2,5],[2,0]],
+        'I': [[0, 0], [2, 0], [1, 0], [1, 5],[0,5],[2,5]],
+        'J': [[0, 2.5], [0, 0], [1, 0], [1, 5],[0,5],[2,5]],
+        'K': [[0, 0], [0, 5], [0, 2.5], [2, 5],[0,2.5],[2,0]],
+        'L': [[0, 5], [0, 0], [2, 0]],
+        'M': [[0, 0], [0, 5], [1, 2.5], [2, 5],[2,5],[2,0]],
+        'N': [[0, 0], [0, 5], [2, 0], [2, 5]],
+        'O': [[0, 0], [0, 5], [2, 5], [2, 0], [0, 0]],
+        'P': [[0, 0], [0, 5], [2, 5], [2, 2.5], [0, 2.5]],
+        'Q': [[0, 0], [0, 5], [2, 5], [2, 0], [0, 0], [2, 0],[1,2.5],[2,0]],
+        'R': [[0, 0], [0, 5], [2, 5], [2, 2.5], [0, 2.5], [2, 0]],
+        'S': [[0,0],[2, 0], [2, 2.5], [0, 2.5], [0, 5], [2, 5]],
+        'T': [[1, 0], [1, 5], [0, 5], [2, 5]],
+        'U': [[0, 5], [0, 0], [2, 0], [2, 5]],
+        'V': [[0, 5], [1, 0], [2, 5]],
+        'W': [[0, 5], [0, 0], [1, 2.5], [2, 0], [2, 5]],
+        'X': [[0, 0], [2, 5], [1, 2.5], [0, 5], [2, 0]],
+        'Y': [[0, 5], [1, 2.5], [2, 5], [1, 2.5], [1, 0]],
+        'Z': [[2, 0], [0, 0], [2, 5], [0, 5]]
+        }
+
+        nombre = palabra
+        print(nombre)
+
+        coordenadas_x = []
+        coordenadas_y = []
+        espacio_entre_letras = 3  # Espacio entre letras
+        current_x = 0
+
+        for letra in palabra:
+            if letra.upper() in coordenadas_letras:
+                coordenadas = coordenadas_letras[letra.upper()]
+                for i in range(len(coordenadas)):
+                    x, y = coordenadas[i]
+                    coordenadas_x.append(x + current_x)
+                    coordenadas_y.append(y)
+                current_x += max([x for x, _ in coordenadas]) + espacio_entre_letras
+
+        self.plot_names(coordenadas_x, coordenadas_y)
+
+    def plot_names(self, coordenadas_x, coordenadas_y):
+
+        l1 = 6
+        l2 = 8
+
+        d = np.zeros((3, len(coordenadas_x)))
+
+        R = []
+        R.append(RevoluteDH(d=0, alpha=0, a=l1, offset=0))
+        R.append(RevoluteDH(d=0, alpha=0, a=l2, offset=0))
+        Robot = DHRobot(R, name='Bender')
+
+        for i in range(len(coordenadas_x)):
+            x, y = coordenadas_x[i], coordenadas_y[i]
+    
+            Px = x/2-8
+            Py = y/2+4
 
             b = math.sqrt(Px**2+Py**2)
             # Theta 2

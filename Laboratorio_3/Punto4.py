@@ -84,8 +84,8 @@ class Ui_MainWindow(object):
         self.fig1.set_ylabel('Y')
         self.fig1.set_zlabel('Z')
         self.fig1.set_xlim(-10, 10)
-        self.fig1.set_ylim(-10, 10)
-        self.fig1.set_zlim(-10, 10)
+        self.fig1.set_ylim(0, 10)
+        self.fig1.set_zlim(0, 10)
 
         self.canvas = FigureCanvas(self.fig)
         layout = QtWidgets.QVBoxLayout(self.label_7)
@@ -215,13 +215,13 @@ class Ui_MainWindow(object):
         # Define las rutas de las imágenes según la opción seleccionada
         if seleccion == "Chevrolet":
             # Leer la imagen con OpenCV
-            img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Chevrolet.png')
+            img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Chevrolet.jpg')
         elif seleccion == "Renault":
             img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Renault.png')
         elif seleccion == "Mercedes":
             img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Mercedes.png')
         elif seleccion == "Kia":
-            img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Kia.jpg')
+            img = cv2.imread('../Robotica/Laboratorio_3/Imagenes/Kia2.jpg')
 
         # Convertir la imagen a escala de grises
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)     
@@ -243,9 +243,25 @@ class Ui_MainWindow(object):
         self.robot_cars(coordenadas_x, coordenadas_y, seleccion)
 
     def robot_cars(self, coordenadas_x, coordenadas_y, seleccion):
+        # Restringir el número de coordenadas a procesar
+        if seleccion == "Chevrolet":
+            coordenadas_x = coordenadas_x[:94]
+            coordenadas_y = coordenadas_y[:94]
 
-        l1 = 10
-        l2 = 10
+        elif seleccion == "Renault":
+            coordenadas_x = coordenadas_x[:710]
+            coordenadas_y = coordenadas_y[:710]
+
+        elif seleccion == "Mercedes":
+            coordenadas_x = coordenadas_x[:820]
+            coordenadas_y = coordenadas_y[:820]
+
+        elif seleccion == "Kia":
+            coordenadas_x = coordenadas_x[:446]
+            coordenadas_y = coordenadas_y[:446]
+
+        l1 = 6
+        l2 = 8
 
         d = np.zeros((3, len(coordenadas_x)))
 
@@ -258,29 +274,29 @@ class Ui_MainWindow(object):
             x, y = coordenadas_x[i], coordenadas_y[i]
             # Cinemática inversa
             if seleccion == "Chevrolet":
-                Px = x/50-4
-                Py = y/50+5
+                Px = x/70-5
+                Py = y/70+6
             elif seleccion == "Renault":
-                Px = x/50-4
-                Py = y/50+4
+                Px = x/50-2
+                Py = y/50+6
             elif seleccion == "Mercedes":
-                Px = x/60-4
-                Py = y/60+4
+                Px = x/60-2
+                Py = y/60+6
             elif seleccion == "Kia":
-                Px = x/80-4
-                Py = y/80+4
+                Px = x/70-4
+                Py = y/70+6
 
             b = math.sqrt(Px**2+Py**2)
             # Theta 2
             cos_theta2 = (b**2-l2**2-l1**2)/(2*l1*l2)
             sen_theta2 = math.sqrt(1-(cos_theta2)**2)#(+)codo abajo y (-)codo arriba
             theta2 = math.atan2(sen_theta2, cos_theta2)
-            
+        
             # Theta 1
             alpha = math.atan2(Py,Px)
             phi = math.atan2(l2*sen_theta2, l1+l2*cos_theta2)
             theta1 = alpha - phi
-            
+        
             if theta1 <= -np.pi:
                 theta1 = (2*np.pi)+theta1 
 
@@ -294,9 +310,10 @@ class Ui_MainWindow(object):
             d[:, i] =  MTH.t 
 
             self.plot_path4(d, i)
-            self.move_robot(self, q1, q2)
+            #self.move_robot(self, q1, q2)
             #self.plot_robot(Robot, q1, q2)
-            
+
+
     def plot_robot(self, robot, q1, q2):
         
         self.label_5.setText(str(np.rad2deg(q2)))
