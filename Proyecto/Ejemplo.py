@@ -12,8 +12,6 @@ from InverseKinematics3R import *
 from ForwardKinematics3R import *
 import matplotlib.pyplot as plt
    
-
-
 class Ui_MainWindow(object):
         def setupUi(self, MainWindow):
                 MainWindow.setObjectName("MainWindow")
@@ -24,6 +22,7 @@ class Ui_MainWindow(object):
                 self.horizontalSlider_motor1.setGeometry(QtCore.QRect(100, 80, 201, 20))
                 self.horizontalSlider_motor1.setOrientation(QtCore.Qt.Horizontal)
                 self.horizontalSlider_motor1.setObjectName("horizontalSlider_motor1")
+                self.horizontalSlider_motor1.setRange(0, 180)
                 self.label = QtWidgets.QLabel(self.centralwidget)
                 self.label.setGeometry(QtCore.QRect(30, 80, 58, 18))
                 self.label.setObjectName("label")
@@ -31,6 +30,7 @@ class Ui_MainWindow(object):
                 self.horizontalSlider_motor2.setGeometry(QtCore.QRect(100, 110, 201, 20))
                 self.horizontalSlider_motor2.setOrientation(QtCore.Qt.Horizontal)
                 self.horizontalSlider_motor2.setObjectName("horizontalSlider_motor2")
+                self.horizontalSlider_motor2.setRange(0, 180)
                 self.label_2 = QtWidgets.QLabel(self.centralwidget)
                 self.label_2.setGeometry(QtCore.QRect(30, 110, 58, 18))
                 self.label_2.setObjectName("label_2")
@@ -38,6 +38,9 @@ class Ui_MainWindow(object):
                 self.horizontalSlider_motor3.setGeometry(QtCore.QRect(100, 140, 201, 20))
                 self.horizontalSlider_motor3.setOrientation(QtCore.Qt.Horizontal)
                 self.horizontalSlider_motor3.setObjectName("horizontalSlider_motor3")
+                self.horizontalSlider_motor3.setRange(0, 180)
+                initial_value = int((180 - 0) / 2)  # Valor inicial en la mitad
+                self.horizontalSlider_motor3.setValue(initial_value)
                 self.label_3 = QtWidgets.QLabel(self.centralwidget)
                 self.label_3.setGeometry(QtCore.QRect(30, 140, 58, 18))
                 self.label_3.setObjectName("label_3")
@@ -123,42 +126,44 @@ class Ui_MainWindow(object):
                 self.horizontalSlider_motor2.valueChanged.connect(self.manual)
                 self.horizontalSlider_motor3.valueChanged.connect(self.manual)
                 self.pushButton_go.clicked.connect(self.semi_auto)
+                self.pushButton_pick.clicked.connect(self.gripperPick)
+                self.pushButton_PLACE.clicked.connect(self.gripperPlace)
+
+                self.plot_robot_figure()
         
        
         def manual(self):
-       
-               
                 
                 theta1=self.horizontalSlider_motor1.value()
                 theta2=self.horizontalSlider_motor2.value()
                 theta3=self.horizontalSlider_motor3.value()
-                #q1 = int(numpy.deg2rad(theta1))
-                q1 = theta1
-                #q2 = int(numpy.deg2rad(theta2))
-                q2 = theta2
-                #q3 = int(numpy.deg2rad(theta3))
-                q3 = theta3
+                q1 = int(numpy.deg2rad(theta1))
+                q2 = int(numpy.deg2rad(theta2))
+                q3 = int(-numpy.deg2rad(theta3)+numpy.pi/2)
+
                 #self.mover_servo(q1,q2,q3)
-        
-        def mover_servo(self, q1,q2,q3,servo_max=1970,servo_min=980):
-           
-                pulse_width=int((q1/11)*(servo_max-servo_min)+servo_min)
-                self.pca.channels[0].duty_cycle=pulse_width
-       
-                pulse_width=int((q2/11)*(servo_max-servo_min)+servo_min)
-                self.pca.channels[1].duty_cycle=pulse_width
-    
-                pulse_width=int((q3/11)*(servo_max-servo_min)+servo_min)
-                self.pca.channels[2].duty_cycle=pulse_width
+                self.plot_robot(q1, q2, q3)
        
         def semi_auto(self):
-                l1 = 8
-                l2 = 11
-                l3 = 13
+                l1 = 4
+                l2 = 8
+                l3 = 18
                 
                 x = self.pos_x.text()
                 y = self.pos_y.text()
                 z = self.pos_z.text()
+
+                if x == '' or y == '' or z == '' or x == '-' or y == '-' or z == '-' :
+
+                    x = 26
+                    y = 0
+                    z = 4
+
+                if x == 0 and y == 0 and z == 0 :
+
+                    x = 26
+                    y = 0
+                    z = 4
                 
                 # Cinemática inversa
                 Px = int(x)
@@ -188,7 +193,7 @@ class Ui_MainWindow(object):
                     theta2 = (2*numpy.pi)+theta2
 
                 print(f'theta 2 = {numpy.rad2deg(theta2):.4f}')
-        #-------------
+                #-------------
 
                 q1 = theta1
                 q2 = theta2
@@ -199,6 +204,52 @@ class Ui_MainWindow(object):
                         q2 = 0
                         q3 = 0
                 #self.mover_servo(q1,q2,q3)
+                self.plot_robot(q1, q2, q3)
+
+        def mover_servo(self, q1,q2,q3,servo_max=1970,servo_min=980):
+                
+                q1s = int(numpy.rad2deg(q1))
+                q2s = int(numpy.rad2deg(q2))
+                q3s = int(numpy.rad2deg(q3))
+           
+                pulse_width=int((q1s/11)*(servo_max-servo_min)+servo_min)
+                self.pca.channels[0].duty_cycle=pulse_width
+       
+                pulse_width=int((q2s/11)*(servo_max-servo_min)+servo_min)
+                self.pca.channels[1].duty_cycle=pulse_width
+    
+                pulse_width=int((q3s/11)*(servo_max-servo_min)+servo_min)
+                self.pca.channels[2].duty_cycle=pulse_width
+
+        def gripperPick(self, servo_max=1970,servo_min=980):
+              
+            qg = 0
+            print(qg)
+            pulse_width=int((qg/11)*(servo_max-servo_min)+servo_min)
+            self.pca.channels[3].duty_cycle=pulse_width
+
+        def gripperPlace(self, servo_max=1970,servo_min=980):
+              
+            qg = 90
+            pulse_width=int((qg/11)*(servo_max-servo_min)+servo_min)
+            self.pca.channels[3].duty_cycle=pulse_width
+
+        def plot_robot_figure(self):
+
+            l1 = 4
+            l2 = 8
+            l3 = 18
+
+            R = []
+            R.append(RevoluteDH(d=l1, alpha=numpy.pi/2, a=0, offset=0))
+            R.append(RevoluteDH(d=0, alpha=0, a=l2, offset=0))
+            R.append(RevoluteDH(d=0, alpha=0, a=l3, offset=0))
+
+            self.Robot = DHRobot(R, name='Bender')
+
+        def plot_robot(self, q1, q2, q3):
+
+            self.Robot.plot([q1, q2, q3], backend='pyplot', limits=[-30, 30, -30, 30, -30, 30])
         
         
         def retranslateUi(self, MainWindow):
@@ -224,9 +275,6 @@ class Ui_MainWindow(object):
                 self.label_15.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">Diego Alejandro Celemin</span></p></body></html>"))
                 self.label_16.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">Cristian Amaya</span></p></body></html>"))
       
-        
-       
-
 
 
 if __name__ == "__main__":

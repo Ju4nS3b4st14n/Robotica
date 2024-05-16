@@ -264,8 +264,9 @@ class Ui_MainWindow(object):
         q1 = int(numpy.deg2rad(theta1))
         q2 = int(numpy.deg2rad(theta2))
         q3 = int(numpy.deg2rad(theta3))
+        print(q1, q2, q3)
 
-        self.plot_robot(q1, q2, q3)
+        #self.plot_robot(q1, q2, q3)
 
     def plot_robot(self, q1, q2, q3):
 
