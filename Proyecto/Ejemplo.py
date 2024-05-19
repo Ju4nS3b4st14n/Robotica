@@ -1,10 +1,10 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import time   
-#from adafruit_servokit import ServoKit 
+from adafruit_servokit import ServoKit 
 import sys
-#import board
-#import busio
-#from adafruit_pca9685 import PCA9685
+import board
+import busio
+from adafruit_pca9685 import PCA9685
 import math
 import numpy
 from sympy import *
@@ -117,9 +117,10 @@ class Ui_MainWindow(object):
         
                 self.retranslateUi(MainWindow)
                 QtCore.QMetaObject.connectSlotsByName(MainWindow)
-                # self.i2c=busio.I2C(board.SCL,board.SDA)
-                # self.pca=PCA9685(self.i2c)
-                # self.pca.frequency=60
+                self.i2c=busio.I2C(board.SCL,board.SDA)
+                self.pca=PCA9685(self.i2c)
+                self.kit = ServoKit(channels=16)
+                self.pca.frequency=60
                 self.servo_min=980
                 self.servo_max=1970
                 self.horizontalSlider_motor1.valueChanged.connect(self.manual)
@@ -137,12 +138,12 @@ class Ui_MainWindow(object):
                 theta1=self.horizontalSlider_motor1.value()
                 theta2=self.horizontalSlider_motor2.value()
                 theta3=self.horizontalSlider_motor3.value()
-                q1 = int(numpy.deg2rad(theta1))
-                q2 = int(numpy.deg2rad(theta2))
-                q3 = int(-numpy.deg2rad(theta3)+numpy.pi/2)
-
-                #self.mover_servo(q1,q2,q3)
-                self.plot_robot(q1, q2, q3)
+                #q1 = int(numpy.deg2rad(theta1))
+                #q2 = int(numpy.deg2rad(theta2))
+                #q3 = int(-numpy.deg2rad(theta3)+numpy.pi/2)
+                print(theta1,theta3)
+                self.mover_servo(theta1,theta2,theta3)
+                #self.plot_robot(q1, q2, q3)
        
         def semi_auto(self):
                 l1 = 4
@@ -203,36 +204,22 @@ class Ui_MainWindow(object):
                         q1 = 0
                         q2 = 0
                         q3 = 0
-                #self.mover_servo(q1,q2,q3)
-                self.plot_robot(q1, q2, q3)
+                self.mover_servo(q1,q2,q3)
+                #self.plot_robot(q1, q2, q3)
 
-        def mover_servo(self, q1,q2,q3,servo_max=1970,servo_min=980):
-                
-                q1s = int(numpy.rad2deg(q1))
-                q2s = int(numpy.rad2deg(q2))
-                q3s = int(numpy.rad2deg(q3))
+        def mover_servo(self, q1s,q2s,q3s,servo_max=1970,servo_min=980):
            
-                pulse_width=int((q1s/11)*(servo_max-servo_min)+servo_min)
-                self.pca.channels[0].duty_cycle=pulse_width
-       
-                pulse_width=int((q2s/11)*(servo_max-servo_min)+servo_min)
-                self.pca.channels[1].duty_cycle=pulse_width
-    
-                pulse_width=int((q3s/11)*(servo_max-servo_min)+servo_min)
-                self.pca.channels[2].duty_cycle=pulse_width
+                self.kit.servo[0].angle=q1s
+                self.kit.servo[1].angle=q2s
+                self.kit.servo[2].angle=q3s
 
         def gripperPick(self, servo_max=1970,servo_min=980):
               
-            qg = 0
-            print(qg)
-            pulse_width=int((qg/11)*(servo_max-servo_min)+servo_min)
-            self.pca.channels[3].duty_cycle=pulse_width
+            self.kit.servo[3].angle=90
 
         def gripperPlace(self, servo_max=1970,servo_min=980):
               
-            qg = 90
-            pulse_width=int((qg/11)*(servo_max-servo_min)+servo_min)
-            self.pca.channels[3].duty_cycle=pulse_width
+            self.kit.servo[3].angle=0
 
         def plot_robot_figure(self):
 
