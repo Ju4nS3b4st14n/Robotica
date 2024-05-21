@@ -122,8 +122,6 @@ class Ui_MainWindow(object):
                 self.pca=PCA9685(self.i2c)
                 self.kit = ServoKit(channels=16)
                 self.pca.frequency=60
-                self.servo_min=980
-                self.servo_max=1970
                 self.horizontalSlider_motor1.valueChanged.connect(self.manual)
                 self.horizontalSlider_motor2.valueChanged.connect(self.manual)
                 self.horizontalSlider_motor3.valueChanged.connect(self.manual)
