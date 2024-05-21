@@ -11,6 +11,7 @@ from sympy import *
 from InverseKinematics3R import *
 from ForwardKinematics3R import *
 import matplotlib.pyplot as plt
+from gpiozero import *
    
 class Ui_MainWindow(object):
         def setupUi(self, MainWindow):
@@ -130,6 +131,8 @@ class Ui_MainWindow(object):
                 self.pushButton_pick.clicked.connect(self.gripperPick)
                 self.pushButton_PLACE.clicked.connect(self.gripperPlace)
 
+                self.sensor = DistanceSensor(echo=14, trigger=4)
+
                 self.plot_robot_figure()
         
        
@@ -138,10 +141,7 @@ class Ui_MainWindow(object):
                 theta1=self.horizontalSlider_motor1.value()
                 theta2=self.horizontalSlider_motor2.value()
                 theta3=self.horizontalSlider_motor3.value()
-                #q1 = int(numpy.deg2rad(theta1))
-                #q2 = int(numpy.deg2rad(theta2))
-                #q3 = int(-numpy.deg2rad(theta3)+numpy.pi/2)
-                print(theta1,theta3)
+                
                 self.mover_servo(theta1,theta2,theta3)
                 #self.plot_robot(q1, q2, q3)
        
@@ -207,17 +207,22 @@ class Ui_MainWindow(object):
                 self.mover_servo(q1,q2,q3)
                 #self.plot_robot(q1, q2, q3)
 
-        def mover_servo(self, q1s,q2s,q3s,servo_max=1970,servo_min=980):
+        def mover_servo(self, q1s,q2s,q3s):
+            
+                distancia = self.sensor.distance
+                print(distancia, type(distancia))
+                if distancia < 26 :
+                    print("lento")
            
-                self.kit.servo[0].angle=q1s
-                self.kit.servo[1].angle=q2s
+                self.kit.servo[4].angle=q1s
+                self.kit.servo[0].angle=q2s
                 self.kit.servo[2].angle=q3s
 
-        def gripperPick(self, servo_max=1970,servo_min=980):
+        def gripperPick(self):
               
             self.kit.servo[3].angle=90
 
-        def gripperPlace(self, servo_max=1970,servo_min=980):
+        def gripperPlace(self):
               
             self.kit.servo[3].angle=0
 
