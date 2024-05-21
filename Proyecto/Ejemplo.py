@@ -205,12 +205,33 @@ class Ui_MainWindow(object):
                 self.mover_servo(q1,q2,q3)
                 #self.plot_robot(q1, q2, q3)
 
-        def mover_servo(self, q1s,q2s,q3s):
+        def mover_servo(self, q1s,q2s,q3s, velocidad = 10):
             
                 distancia = self.sensor.distance
+                
                 print(distancia, type(distancia))
-                if distancia < 26 :
+                if distancia < 0.26 and distancia > 0.08:
                     print("lento")
+                    
+                    self.kit.servo[4].angle=q1s
+                    self.kit.servo[0].angle=q2s
+                    self.kit.servo[2].angle=q3s
+                    
+                    time.sleep(2)
+                
+                
+                if distancia < 0.08 :
+                    while True:
+                        distancia = self.sensor.distance
+                        time.sleep(2)
+                        if distancia > 0.08 :
+                            False
+                        
+                        else:
+                            print("alto")
+                            self.kit.servo[4].angle=q1s
+                            self.kit.servo[0].angle=q1s
+                            self.kit.servo[2].angle=q1s
            
                 self.kit.servo[4].angle=q1s
                 self.kit.servo[0].angle=q2s
