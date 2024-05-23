@@ -213,6 +213,42 @@ class Ui_MainWindow(object):
                 #self.plot_robot(q1, q2, q3)
                 
         def auto(self):
+
+           l1 = 4
+            l2 = 8
+            l3 = 18
+
+            # Cinemática inversa
+            # Punto 1
+            P1x = 26
+            P1y = 0
+            P1z = 4
+
+            [theta1_P1, theta2_P1, theta3_P1] = InverseKinematics3R(l1,l2,l3,P1x,P1y,P1z)
+
+            # Punto 2
+            P2x = 0
+            P2y = 26
+            P2z = 4
+
+            [theta1_P2, theta2_P2, theta3_P2] = InverseKinematics3R(l1,l2,l3,P2x,P2y,P2z)
+
+            # Punto 2
+            P3x = -26
+            P3y = 0
+            P3z = 4
+
+            [theta1_P3, theta2_P3, theta3_P3] = InverseKinematics3R(l1,l2,l3,P3x,P3y,P3z)
+
+            n = 20
+            x = numpy.arange(1,n+1,1)
+
+            theta1_P1toP2 = numpy.linspace(theta1_P1, theta1_P3, n)
+            theta2_P1toP2 = numpy.linspace(theta2_P1, theta2_P3, n)
+            theta3_P1toP2 = numpy.linspace(theta3_P1, theta3_P3, n)
+
+            for i in range (0,n):
+                MTH = ForwardKinematics3R(l1,l2,l3,theta1_P1toP2[i],theta2_P1toP2[i],theta3_P1toP2[i])
                 
         def ajustar_angulo(self, angle):
                 while angle < 0:
