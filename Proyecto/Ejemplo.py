@@ -23,7 +23,7 @@ class Ui_MainWindow(object):
                 self.horizontalSlider_motor1.setGeometry(QtCore.QRect(100, 80, 201, 20))
                 self.horizontalSlider_motor1.setOrientation(QtCore.Qt.Horizontal)
                 self.horizontalSlider_motor1.setObjectName("horizontalSlider_motor1")
-                self.horizontalSlider_motor1.setRange(0, 180)
+                self.horizontalSlider_motor1.setRange(1, 179)
                 self.label = QtWidgets.QLabel(self.centralwidget)
                 self.label.setGeometry(QtCore.QRect(30, 80, 58, 18))
                 self.label.setObjectName("label")
@@ -31,7 +31,7 @@ class Ui_MainWindow(object):
                 self.horizontalSlider_motor2.setGeometry(QtCore.QRect(100, 110, 201, 20))
                 self.horizontalSlider_motor2.setOrientation(QtCore.Qt.Horizontal)
                 self.horizontalSlider_motor2.setObjectName("horizontalSlider_motor2")
-                self.horizontalSlider_motor2.setRange(0, 180)
+                self.horizontalSlider_motor2.setRange(1, 179)
                 self.label_2 = QtWidgets.QLabel(self.centralwidget)
                 self.label_2.setGeometry(QtCore.QRect(30, 110, 58, 18))
                 self.label_2.setObjectName("label_2")
@@ -39,7 +39,7 @@ class Ui_MainWindow(object):
                 self.horizontalSlider_motor3.setGeometry(QtCore.QRect(100, 140, 201, 20))
                 self.horizontalSlider_motor3.setOrientation(QtCore.Qt.Horizontal)
                 self.horizontalSlider_motor3.setObjectName("horizontalSlider_motor3")
-                self.horizontalSlider_motor3.setRange(0, 180)
+                self.horizontalSlider_motor3.setRange(1, 179)
                 initial_value = int((180 - 0) / 2)  # Valor inicial en la mitad
                 self.horizontalSlider_motor3.setValue(initial_value)
                 self.label_3 = QtWidgets.QLabel(self.centralwidget)
@@ -178,11 +178,14 @@ class Ui_MainWindow(object):
                 b = sqrt(e**2+c**2)
                 # Theta 1
                 theta1 = float(atan2(Py,Px))
+                if numpy.isnan(theta1):
+                     theta1 = 0
                 print(f'theta 1 = {numpy.rad2deg(theta1):.4f}')
                 # Theta 3
                 cos_theta3 = (b**2-l2**2-l3**2)/(2*l2*l3)
-                sen_theta3 = sqrt(1-(cos_theta3)**2)
+                sen_theta3 = -sqrt(1-(cos_theta3)**2)
                 theta3 = float(atan2(sen_theta3, cos_theta3))
+                theta3 = theta3 + numpy.pi / 2
                 print(f'theta 3 = {numpy.rad2deg(theta3):.4f}')
                 # Theta 2
                 alpha = math.atan2(c,e)
@@ -197,45 +200,83 @@ class Ui_MainWindow(object):
                 q1 = theta1
                 q2 = theta2
                 q3 = theta3
+                
+                q1 = self.ajustar_angulo(q1)
+                q2 = self.ajustar_angulo(q2)
+                q3 = self.ajustar_angulo(q3)
 
-                if numpy.isnan(q1) or numpy.isnan(q2) or numpy.isnan(q3):
-                        q1 = 0
-                        q2 = 0
-                        q3 = 0
+                q1 = numpy.rad2deg(q1)
+                q2 = numpy.rad2deg(q2)
+                q3 = numpy.rad2deg(q3)
+                
                 self.mover_servo(q1,q2,q3)
                 #self.plot_robot(q1, q2, q3)
+                
+        def ajustar_angulo(self, angle):
+                while angle < 0:
+                    angle += numpy.pi
+                while angle > numpy.pi:
+                    angle -= numpy.pi
+                return angle
 
-        def mover_servo(self, q1s,q2s,q3s, velocidad = 10):
+        def mover_servo(self, q1s,q2s,q3s):
             
                 distancia = self.sensor.distance
                 
-                print(distancia, type(distancia))
+                q3s = 180 - q3s
+                
+                if q1s == 0:
+                    q1s = 5
+                    
+                elif  q1s == 180:
+                    q1s = 175
+                
+                if q2s == 0:
+                    q2s = 5
+                    
+                elif  q2s == 180:
+                    q2s = 175
+                    
+                if q3s == 0:
+                    q3s = 5
+                    
+                elif  q3s == 180:
+                    q3s = 175
+        
                 if distancia < 0.26 and distancia > 0.08:
-                    print("lento")
+                    #print("lento")
                     
-                    self.kit.servo[4].angle=q1s
-                    self.kit.servo[0].angle=q2s
-                    self.kit.servo[2].angle=q3s
+                    pulso = int((q1s/24) * (1970-980) + 980)
+                    self.pca.channels[4].duty_cycle = pulso
+                
+                    pulso2 = int((q2s/21) * (1970-980) + 980)
+                    self.pca.channels[15].duty_cycle = pulso2
+              
+                    pulso3 = int((q3s/27) * (1970-980) + 980)
+                    self.pca.channels[2].duty_cycle = pulso3
                     
-                    time.sleep(2)
+                    time.sleep(0.5)
                 
                 
                 if distancia < 0.08 :
                     while True:
                         distancia = self.sensor.distance
-                        time.sleep(2)
+                        time.sleep(0.5)
                         if distancia > 0.08 :
-                            False
+                            return False
                         
                         else:
                             print("alto")
-                            self.kit.servo[4].angle=q1s
-                            self.kit.servo[0].angle=q1s
-                            self.kit.servo[2].angle=q1s
            
-                self.kit.servo[4].angle=q1s
-                self.kit.servo[0].angle=q2s
-                self.kit.servo[2].angle=q3s
+                
+                pulso = int((q1s/24) * (1970-980) + 980)
+                self.pca.channels[4].duty_cycle = pulso
+                
+                pulso2 = int((q2s/21) * (1970-980) + 980)
+                self.pca.channels[15].duty_cycle = pulso2
+              
+                pulso3 = int((q3s/27) * (1970-980) + 980)
+                self.pca.channels[2].duty_cycle = pulso3
 
         def gripperPick(self):
               
