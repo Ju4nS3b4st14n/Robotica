@@ -275,80 +275,74 @@ class Ui_MainWindow(object):
                 self.pca.channels[2].duty_cycle = pulso3
                 
         def mover_servos_semi(self, q1s, q2s, q3s):
-            
                 distancia = self.sensor.distance
-                
+
+                # Invertir q3s si el servo está montado al revés
                 q3s = 180 - q3s
-                
-                if q1s == 0:
-                    q1s = 5
-                    
-                elif  q1s == 180:
-                    q1s = 175
-                
-                if q2s == 0:
-                    q2s = 5
-                    
-                elif  q2s == 180:
-                    q2s = 175
-                    
-                if q3s == 0:
-                    q3s = 5
-                    
-                elif  q3s == 180:
-                    q3s = 175
-        
+
+                # Asegurar que los ángulos estén dentro del rango permitido
+                q1s = max(5, min(q1s, 175))
+                q2s = max(5, min(q2s, 175))
+                q3s = max(5, min(q3s, 175))
+
                 if distancia < 0.26 and distancia > 0.08:
-                    #print("lento")
-                    
-                    pulso = int((q1s/24) * (1970-980) + 980)
+                    print("lento")
+        
+                    pulso = int((q1s / 24) * (1970 - 980) + 980)
                     self.pca.channels[4].duty_cycle = pulso
-                
-                    pulso2 = int((q2s/21) * (1970-980) + 980)
+
+                    pulso2 = int((q2s / 21) * (1970 - 980) + 980)
                     self.pca.channels[15].duty_cycle = pulso2
-              
-                    pulso3 = int((q3s/27) * (1970-980) + 980)
+
+                    pulso3 = int((q3s / 27) * (1970 - 980) + 980)
                     self.pca.channels[2].duty_cycle = pulso3
-                    
+
                     time.sleep(0.5)
-                
-                
-                if distancia < 0.08 :
+
+                if distancia < 0.08:
                     while True:
                         distancia = self.sensor.distance
-                        if distancia > 0.08 :
-                            return False
-                        
-                for i in range(5, 175, 1):
+                        if distancia > 0.08:
+                            break
+                        else:
+                            print("alto")
+                            self.pca.channels[4].duty_cycle = 0
+                            self.pca.channels[15].duty_cycle = 0
+                            self.pca.channels[2].duty_cycle = 0
+                            time.sleep(2)
 
-                    q1 = i
-                    q2 = i
-                    q3 = i
-                    
-                    if q1 >= int(q1s):
-                        pulso = int((q1s/24) * (1970-980) + 980)
+                # Obtener los valores actuales de los ángulos de los servos
+                current_q1 = self.kit.servo[4].angle
+                current_q2 = self.kit.servo[0].angle
+                current_q3 = 180 - self.kit.servo[2].angle  # Ajuste para el servo montado al revés
+
+                # Calcular las diferencias de los ángulos
+                delta_q1 = q1s - current_q1
+                delta_q2 = q2s - current_q2
+                delta_q3 = q3s - current_q3
+
+                # Determinar el número de pasos necesarios para realizar el movimiento gradual
+                max_steps = max(abs(delta_q1), abs(delta_q2), abs(delta_q3))
+                step_size = 1  # Puedes ajustar este valor para cambiar la suavidad del movimiento
+
+                for step in range(int(max_steps)):
+                    if step <= abs(delta_q1):
+                        new_q1 = current_q1 + step_size * (delta_q1 / abs(delta_q1))
+                        pulso = int((new_q1 / 24) * (1970 - 980) + 980)
                         self.pca.channels[4].duty_cycle = pulso
-                        
-                    elif q2 >= int(q2s):
-                        pulso2 = int((q2s/21) * (1970-980) + 980)
+        
+                    if step <= abs(delta_q2):
+                        new_q2 = current_q2 + step_size * (delta_q2 / abs(delta_q2))
+                        pulso2 = int((new_q2 / 21) * (1970 - 980) + 980)
                         self.pca.channels[15].duty_cycle = pulso2
-                        
-                    elif q3 <= int(q3s):
-                        pulso3 = int((q3s/27) * (1970-980) + 980)
+
+                    if step <= abs(delta_q3):
+                        new_q3 = current_q3 + step_size * (delta_q3 / abs(delta_q3))
+                        pulso3 = int((new_q3 / 27) * (1970 - 980) + 980)
                         self.pca.channels[2].duty_cycle = pulso3
-                    
-                    else:
-                        
-                        pulso = int((q1/24) * (1970-980) + 980)
-                        self.pca.channels[4].duty_cycle = pulso
-                
-                        pulso2 = int((q2/21) * (1970-980) + 980)
-                        self.pca.channels[15].duty_cycle = pulso2
-              
-                        pulso3 = int((q3/27) * (1970-980) + 980)
-                        self.pca.channels[2].duty_cycle = pulso3
-                    
-                        time.sleep(0.5)
+
+                    time.sleep(0.05)  # Ajusta este valor para cambiar la velocidad del movimiento
+
               
 
         def gripperPick(self):
