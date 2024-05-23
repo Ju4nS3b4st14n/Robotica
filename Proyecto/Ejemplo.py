@@ -140,7 +140,7 @@ class Ui_MainWindow(object):
                 theta2=self.horizontalSlider_motor2.value()
                 theta3=self.horizontalSlider_motor3.value()
                 
-                self.mover_servo(theta1,theta2,theta3)
+                self.mover_servos_manual(theta1,theta2,theta3)
                 #self.plot_robot(q1, q2, q3)
        
         def semi_auto(self):
@@ -209,7 +209,7 @@ class Ui_MainWindow(object):
                 q2 = numpy.rad2deg(q2)
                 q3 = numpy.rad2deg(q3)
                 
-                self.mover_servo(q1,q2,q3)
+                self.mover_servos_semi(q1,q2,q3)
                 #self.plot_robot(q1, q2, q3)
                 
         def ajustar_angulo(self, angle):
@@ -219,7 +219,7 @@ class Ui_MainWindow(object):
                     angle -= numpy.pi
                 return angle
 
-        def mover_servo(self, q1s,q2s,q3s):
+        def mover_servos_manual(self, q1s,q2s,q3s):
             
                 distancia = self.sensor.distance
                 
@@ -261,12 +261,8 @@ class Ui_MainWindow(object):
                 if distancia < 0.08 :
                     while True:
                         distancia = self.sensor.distance
-                        time.sleep(0.5)
                         if distancia > 0.08 :
                             return False
-                        
-                        else:
-                            print("alto")
            
                 
                 pulso = int((q1s/24) * (1970-980) + 980)
@@ -277,6 +273,83 @@ class Ui_MainWindow(object):
               
                 pulso3 = int((q3s/27) * (1970-980) + 980)
                 self.pca.channels[2].duty_cycle = pulso3
+                
+        def mover_servos_semi(self, q1s, q2s, q3s):
+            
+                distancia = self.sensor.distance
+                
+                q3s = 180 - q3s
+                
+                if q1s == 0:
+                    q1s = 5
+                    
+                elif  q1s == 180:
+                    q1s = 175
+                
+                if q2s == 0:
+                    q2s = 5
+                    
+                elif  q2s == 180:
+                    q2s = 175
+                    
+                if q3s == 0:
+                    q3s = 5
+                    
+                elif  q3s == 180:
+                    q3s = 175
+        
+                if distancia < 0.26 and distancia > 0.08:
+                    #print("lento")
+                    
+                    pulso = int((q1s/24) * (1970-980) + 980)
+                    self.pca.channels[4].duty_cycle = pulso
+                
+                    pulso2 = int((q2s/21) * (1970-980) + 980)
+                    self.pca.channels[15].duty_cycle = pulso2
+              
+                    pulso3 = int((q3s/27) * (1970-980) + 980)
+                    self.pca.channels[2].duty_cycle = pulso3
+                    
+                    time.sleep(0.5)
+                
+                
+                if distancia < 0.08 :
+                    while True:
+                        distancia = self.sensor.distance
+                        if distancia > 0.08 :
+                            return False
+                        
+                for i in range(5, 175, 1):
+
+                    q1 = i
+                    q2 = i
+                    q3 = i
+                    
+                    if q1 >= int(q1s):
+                        pulso = int((q1s/24) * (1970-980) + 980)
+                        self.pca.channels[4].duty_cycle = pulso
+                        
+                    elif q2 >= int(q2s):
+                        pulso2 = int((q2s/21) * (1970-980) + 980)
+                        self.pca.channels[15].duty_cycle = pulso2
+                        
+                    elif q3 <= int(q3s):
+                        pulso3 = int((q3s/27) * (1970-980) + 980)
+                        self.pca.channels[2].duty_cycle = pulso3
+                    
+                    else:
+                        
+                        pulso = int((q1/24) * (1970-980) + 980)
+                        self.pca.channels[4].duty_cycle = pulso
+                
+                        pulso2 = int((q2/21) * (1970-980) + 980)
+                        self.pca.channels[15].duty_cycle = pulso2
+              
+                        pulso3 = int((q3/27) * (1970-980) + 980)
+                        self.pca.channels[2].duty_cycle = pulso3
+                    
+                        time.sleep(0.5)
+              
 
         def gripperPick(self):
               
