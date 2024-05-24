@@ -128,8 +128,11 @@ class Ui_MainWindow(object):
                 self.pushButton_go.clicked.connect(self.semi_auto)
                 self.pushButton_pick.clicked.connect(self.gripperPick)
                 self.pushButton_PLACE.clicked.connect(self.gripperPlace)
+                self.pushButton_start.clicked.connect(self.auto)
 
                 self.sensor = DistanceSensor(echo=14, trigger=4)
+                self.sensor2 = DistanceSensor(echo=17, trigger=18)
+                self.sensor3 = DistanceSensor(echo=19, trigger=25)
 
                 self.plot_robot_figure()
         
@@ -144,9 +147,12 @@ class Ui_MainWindow(object):
                 #self.plot_robot(q1, q2, q3)
        
         def semi_auto(self):
+            
                 l1 = 4
                 l2 = 8
                 l3 = 18
+                
+                n = 90
                 
                 x = self.pos_x.text()
                 y = self.pos_y.text()
@@ -165,58 +171,39 @@ class Ui_MainWindow(object):
                     z = 4
                 
                 # Cinemática inversa
-                Px = int(x)
-                Py = int(y)
-                Pz = int(z)
+                # Punto 1
+                P1x = 26
+                P1y = 0
+                P1z = 4
 
-                e = sqrt(Px*2+Py*2)
-                c = Pz - l1
-                b = sqrt(e*2+c*2)
+                [theta1_P1, theta2_P1, theta3_P1] = InverseKinematics3R(l1,l2,l3,P1x,P1y,P1z)
                 
-                e = sqrt(Px**2+Py**2)
-                c = Pz - l1
-                b = sqrt(e**2+c**2)
-                # Theta 1
-                theta1 = float(atan2(Py,Px))
-                if numpy.isnan(theta1):
-                     theta1 = 0
-                print(f'theta 1 = {numpy.rad2deg(theta1):.4f}')
-                # Theta 3
-                cos_theta3 = (b**2-l2**2-l3**2)/(2*l2*l3)
-                sen_theta3 = -sqrt(1-(cos_theta3)**2)
-                theta3 = float(atan2(sen_theta3, cos_theta3))
-                theta3 = theta3 + numpy.pi / 2
-                print(f'theta 3 = {numpy.rad2deg(theta3):.4f}')
-                # Theta 2
-                alpha = math.atan2(c,e)
-                phi = math.atan2(l3*sen_theta3, l2+l3*cos_theta3)
-                theta2 = float(alpha - phi)
-                if theta2 <= -numpy.pi:
-                    theta2 = (2*numpy.pi)+theta2
+                # Punto 2
+                P2x = int(x)
+                P2y = int(y)
+                P2z = int(z)
 
-                print(f'theta 2 = {numpy.rad2deg(theta2):.4f}')
-                #-------------
+                [theta1_P2, theta2_P2, theta3_P2] = InverseKinematics3R(l1,l2,l3,P2x,P2y,P2z)
 
-                q1 = theta1
-                q2 = theta2
-                q3 = theta3
-                
-                q1 = self.ajustar_angulo(q1)
-                q2 = self.ajustar_angulo(q2)
-                q3 = self.ajustar_angulo(q3)
+                theta1_P1toP2 = numpy.linspace(theta1_P1, theta1_P2, n)
+                theta2_P1toP2 = numpy.linspace(theta2_P1, theta2_P2, n)
+                theta3_P1toP2 = numpy.linspace(theta3_P1, theta3_P2, n)
 
-                q1 = numpy.rad2deg(q1)
-                q2 = numpy.rad2deg(q2)
-                q3 = numpy.rad2deg(q3)
-                
-                self.mover_servos_semi(q1,q2,q3)
+                for i in range (0,n):
+                    print(i)
+                    [q1, q2, q3] = (theta1_P1toP2[i],theta2_P1toP2[i],theta3_P1toP2[i])
+                    print(q1, q2, q3)
+                    self.mover_servos_semi(q1,q2,q3)
+                    
                 #self.plot_robot(q1, q2, q3)
                 
         def auto(self):
 
-           l1 = 4
+            l1 = 4
             l2 = 8
             l3 = 18
+            n = 100
+            self.gripperPlace(0)
 
             # Cinemática inversa
             # Punto 1
@@ -227,28 +214,97 @@ class Ui_MainWindow(object):
             [theta1_P1, theta2_P1, theta3_P1] = InverseKinematics3R(l1,l2,l3,P1x,P1y,P1z)
 
             # Punto 2
-            P2x = 0
-            P2y = 26
-            P2z = 4
+            P2x = 18
+            P2y = 0
+            P2z = 12
 
             [theta1_P2, theta2_P2, theta3_P2] = InverseKinematics3R(l1,l2,l3,P2x,P2y,P2z)
-
-            # Punto 2
-            P3x = -26
-            P3y = 0
-            P3z = 4
-
-            [theta1_P3, theta2_P3, theta3_P3] = InverseKinematics3R(l1,l2,l3,P3x,P3y,P3z)
-
-            n = 20
-            x = numpy.arange(1,n+1,1)
-
-            theta1_P1toP2 = numpy.linspace(theta1_P1, theta1_P3, n)
-            theta2_P1toP2 = numpy.linspace(theta2_P1, theta2_P3, n)
-            theta3_P1toP2 = numpy.linspace(theta3_P1, theta3_P3, n)
+            
+            theta1_P1toP2 = numpy.linspace(theta1_P1, theta1_P2, n)
+            theta2_P1toP2 = numpy.linspace(theta2_P1, theta2_P2, n)
+            theta3_P1toP2 = numpy.linspace(theta3_P1, theta3_P2, n)
 
             for i in range (0,n):
-                MTH = ForwardKinematics3R(l1,l2,l3,theta1_P1toP2[i],theta2_P1toP2[i],theta3_P1toP2[i])
+                print(i)
+                [q1, q2, q3] = (theta1_P1toP2[i],theta2_P1toP2[i],theta3_P1toP2[i])
+                print(q1, q2, q3)
+                self.mover_servos_semi(q1,q2,q3)
+            
+            self.gripperPick()
+            time.sleep(2)
+
+            # Punto 3
+            P3x = 14
+            P3y = 4
+            P3z = 0
+
+            [theta1_P3, theta2_P3, theta3_P3] = InverseKinematics3R(l1,l2,l3,P3x,P3y,P3z)
+            
+            theta1_P1toP3 = numpy.linspace(theta1_P2, theta1_P3, n)
+            theta2_P1toP3 = numpy.linspace(theta2_P2, theta2_P3, n)
+            theta3_P1toP3 = numpy.linspace(theta3_P2, theta3_P3, n)
+
+            for i in range (0,n):
+                print(i)
+                [q1, q2, q3] = (theta1_P1toP3[i],theta2_P1toP3[i],theta3_P1toP3[i])
+                print(q1, q2, q3)
+                self.mover_servos_semi(q1,q2,q3)
+                
+            self.gripperPlace(30)
+            time.sleep(2)
+            
+            # Punto 4
+            P4x = 18
+            P4y = 0
+            P4z = 12
+
+            [theta1_P4, theta2_P4, theta3_P4] = InverseKinematics3R(l1,l2,l3,P4x,P4y,P4z)
+
+            theta1_P1toP4 = numpy.linspace(theta1_P3, theta1_P4, n)
+            theta2_P1toP4 = numpy.linspace(theta2_P3, theta2_P4, n)
+            theta3_P1toP4 = numpy.linspace(theta3_P3, theta3_P4, n)
+
+            for i in range (0,n):
+                print(i)
+                [q1, q2, q3] = (theta1_P1toP4[i],theta2_P1toP4[i],theta3_P1toP4[i])
+                print(q1, q2, q3)
+                self.mover_servos_semi(q1,q2,q3)
+                
+            # Punto 5
+            P5x = 0
+            P5y = 18
+            P5z = 12
+
+            [theta1_P5, theta2_P5, theta3_P5] = InverseKinematics3R(l1,l2,l3,P5x,P5y,P5z)
+
+            theta1_P1toP5 = numpy.linspace(theta1_P4, theta1_P5, n)
+            theta2_P1toP5 = numpy.linspace(theta2_P4, theta2_P5, n)
+            theta3_P1toP5 = numpy.linspace(theta3_P4, theta3_P5, n)
+
+            for i in range (0,n):
+                print(i)
+                [q1, q2, q3] = (theta1_P1toP5[i],theta2_P1toP5[i],theta3_P1toP5[i])
+                print(q1, q2, q3)
+                self.mover_servos_semi(q1,q2,q3)
+                
+            # Punto 6
+            P6x = 0
+            P6y = 14
+            P6z = 0
+
+            [theta1_P6, theta2_P6, theta3_P6] = InverseKinematics3R(l1,l2,l3,P6x,P6y,P6z)
+
+            theta1_P1toP6 = numpy.linspace(theta1_P5, theta1_P6, n)
+            theta2_P1toP6 = numpy.linspace(theta2_P5, theta2_P6, n)
+            theta3_P1toP6 = numpy.linspace(theta3_P5, theta3_P6, n)
+
+            for i in range (0,n):
+                print(i)
+                [q1, q2, q3] = (theta1_P1toP6[i],theta2_P1toP6[i],theta3_P1toP6[i])
+                print(q1, q2, q3)
+                self.mover_servos_semi(q1,q2,q3)
+                
+            self.gripperPick()
                 
         def ajustar_angulo(self, angle):
                 while angle < 0:
@@ -260,8 +316,8 @@ class Ui_MainWindow(object):
         def mover_servos_manual(self, q1s,q2s,q3s):
             
                 distancia = self.sensor.distance
-                current_q1 = self.kit.servo[4].angle
-                print(current_q1)
+                distancia2 = self.sensor2.distance
+                distancia3 = self.sensor3.distance
                 
                 q3s = 180 - q3s
                 
@@ -283,7 +339,7 @@ class Ui_MainWindow(object):
                 elif  q3s == 180:
                     q3s = 175
         
-                if distancia < 0.26 and distancia > 0.08:
+                if distancia < 0.26 or distancia2 < 0.26:
                     #print("lento")
                     
                     pulso = int((q1s/24) * (1970-980) + 980)
@@ -298,7 +354,7 @@ class Ui_MainWindow(object):
                     time.sleep(0.5)
                 
                 
-                if distancia < 0.08 :
+                if distancia3 < 0.10 :
                     while True:
                         distancia = self.sensor.distance
                         if distancia > 0.08 :
@@ -317,6 +373,8 @@ class Ui_MainWindow(object):
         def mover_servos_semi(self, q1s, q2s, q3s):
             
                 distancia = self.sensor.distance
+                distancia2 = self.sensor2.distance
+                distancia3 = self.sensor3.distance·6
                 
                 q3s = 180 - q3s
                 
@@ -337,8 +395,8 @@ class Ui_MainWindow(object):
                     
                 elif  q3s == 180:
                     q3s = 175
-        
-                if distancia < 0.26 and distancia > 0.08:
+                    
+                if distancia < 0.26 or distancia2 < 0.26:
                     #print("lento")
                     
                     pulso = int((q1s/24) * (1970-980) + 980)
@@ -353,68 +411,32 @@ class Ui_MainWindow(object):
                     time.sleep(0.5)
                 
                 
-                if distancia < 0.08 :
+                if distancia3 < 0.10 :
                     while True:
                         distancia = self.sensor.distance
                         if distancia > 0.08 :
                             return False
-                        
-                if q1s > 5 or q2s > 5 or q3s >90 :        
-                    min = 5
-                    max = 175
-                    num = 1
                     
-                if q1s == 5 or q2s == 5 or q3s < 90:
-                    min = 175
-                    max = 5
-                    num = -1
-                        
-                for i in range(min, max, num):
-
-                    q1 = i
-                    q2 = i
-                    q3 = 90
-                    q3 += i
                     
-                    if q1 >= int(q1s):
-                        pulso = int((q1s/24) * (1970-980) + 980)
-                        self.pca.channels[4].duty_cycle = pulso
-                        
-                    else:
-                        
-                        pulso = int((q1/24) * (1970-980) + 980)
-                        self.pca.channels[4].duty_cycle = pulso
-                        
-                    if q2 >= int(q2s):
-                        pulso2 = int((q2s/21) * (1970-980) + 980)
-                        self.pca.channels[15].duty_cycle = pulso2
-                        
-                    else:
+                pulso = int((q1s/24) * (1970-980) + 980)
+                self.pca.channels[4].duty_cycle = pulso
                 
-                        pulso2 = int((q2/21) * (1970-980) + 980)
-                        self.pca.channels[15].duty_cycle = pulso2
-                        
-                    if q3 >= int(q3s):
-                        pulso3 = int((q3s/27) * (1970-980) + 980)
-                        self.pca.channels[2].duty_cycle = pulso3
-                    
-                    else:
+                pulso2 = int((q2s/21) * (1970-980) + 980)
+                self.pca.channels[15].duty_cycle = pulso2
               
-                        pulso3 = int((q3/27) * (1970-980) + 980)
-                        self.pca.channels[2].duty_cycle = pulso3
+                pulso3 = int((q3s/27) * (1970-980) + 980)
+                self.pca.channels[2].duty_cycle = pulso3
                     
-                        time.sleep(0.5)
-                        
-        def mover_servos_auto(self, q1s, q2s, q3s):
+                time.sleep(0.09)
               
 
         def gripperPick(self):
               
             self.kit.servo[3].angle=90
 
-        def gripperPlace(self):
+        def gripperPlace(self, q):
               
-            self.kit.servo[3].angle=0
+            self.kit.servo[3].angle=q
 
         def plot_robot_figure(self):
 
