@@ -105,8 +105,11 @@ class Ui_MainWindow(object):
                 self.label_15.setGeometry(QtCore.QRect(10, 470, 191, 18))
                 self.label_15.setObjectName("label_15")
                 self.label_16 = QtWidgets.QLabel(self.centralwidget)
-                self.label_16.setGeometry(QtCore.QRect(10, 500, 121, 20))
+                self.label_16.setGeometry(QtCore.QRect(10, 530, 121, 20))
                 self.label_16.setObjectName("label_16")
+                self.label_17 = QtWidgets.QLabel(self.centralwidget)
+                self.label_17.setGeometry(QtCore.QRect(10, 500, 121, 20))
+                self.label_17.setObjectName("label_17")
                 MainWindow.setCentralWidget(self.centralwidget)
                 self.menubar = QtWidgets.QMenuBar(MainWindow)
                 self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 30))
@@ -130,9 +133,9 @@ class Ui_MainWindow(object):
                 self.pushButton_PLACE.clicked.connect(self.gripperPlace)
                 self.pushButton_start.clicked.connect(self.auto)
 
-                self.sensor = DistanceSensor(echo=14, trigger=4)
-                self.sensor2 = DistanceSensor(echo=17, trigger=18)
-                self.sensor3 = DistanceSensor(echo=19, trigger=25)
+                #self.sensor = DistanceSensor(echo=14, trigger=4)
+                #self.sensor2 = DistanceSensor(echo=17, trigger=18)
+                self.sensor3 = DistanceSensor(echo=14, trigger=4)
 
                 self.plot_robot_figure()
         
@@ -305,6 +308,23 @@ class Ui_MainWindow(object):
                 self.mover_servos_semi(q1,q2,q3)
                 
             self.gripperPick()
+            
+            # Punto 6
+            P7x = 0
+            P7y = 18
+            P7z = 12
+
+            [theta1_P7, theta2_P7, theta3_P7] = InverseKinematics3R(l1,l2,l3,P7x,P7y,P7z)
+
+            theta1_P1toP7 = numpy.linspace(theta1_P6, theta1_P7, n)
+            theta2_P1toP7 = numpy.linspace(theta2_P6, theta2_P7, n)
+            theta3_P1toP7 = numpy.linspace(theta3_P6, theta3_P7, n)
+
+            for i in range (0,n):
+                print(i)
+                [q1, q2, q3] = (theta1_P1toP7[i],theta2_P1toP7[i],theta3_P1toP7[i])
+                print(q1, q2, q3)
+                self.mover_servos_semi(q1,q2,q3)
                 
         def ajustar_angulo(self, angle):
                 while angle < 0:
@@ -315,9 +335,9 @@ class Ui_MainWindow(object):
 
         def mover_servos_manual(self, q1s,q2s,q3s):
             
-                distancia = self.sensor.distance
-                distancia2 = self.sensor2.distance
-                distancia3 = self.sensor3.distance
+#                 distancia = self.sensor.distance
+#                 distancia2 = self.sensor2.distance
+                #distancia3 = self.sensor3.distance
                 
                 q3s = 180 - q3s
                 
@@ -339,26 +359,30 @@ class Ui_MainWindow(object):
                 elif  q3s == 180:
                     q3s = 175
         
-                if distancia < 0.26 or distancia2 < 0.26:
-                    #print("lento")
-                    
-                    pulso = int((q1s/24) * (1970-980) + 980)
-                    self.pca.channels[4].duty_cycle = pulso
-                
-                    pulso2 = int((q2s/21) * (1970-980) + 980)
-                    self.pca.channels[15].duty_cycle = pulso2
-              
-                    pulso3 = int((q3s/27) * (1970-980) + 980)
-                    self.pca.channels[2].duty_cycle = pulso3
-                    
-                    time.sleep(0.5)
-                
-                
-                if distancia3 < 0.10 :
-                    while True:
-                        distancia = self.sensor.distance
-                        if distancia > 0.08 :
-                            return False
+#                 if distancia3 < 0.10:
+#                     print(distancia3)
+#                     
+#                     pulso = int((q1s/24) * (1970-980) + 980)
+#                     self.pca.channels[4].duty_cycle = pulso
+#                 
+#                     pulso2 = int((q2s/21) * (1970-980) + 980)
+#                     self.pca.channels[15].duty_cycle = pulso2
+#               
+#                     pulso3 = int((q3s/27) * (1970-980) + 980)
+#                     self.pca.channels[2].duty_cycle = pulso3
+#                     
+#                     time.sleep(0.5)
+#                 
+#                 
+#                 if distancia < 0.26 or distancia2 < 0.26 :
+#                     pulso = int((q1s/24) * (1970-980) + 980)
+#                     self.pca.channels[4].duty_cycle = 0
+#                 
+#                     pulso2 = int((q2s/21) * (1970-980) + 980)
+#                     self.pca.channels[15].duty_cycle = 0
+#               
+#                     pulso3 = int((q3s/27) * (1970-980) + 980)
+#                     self.pca.channels[2].duty_cycle = 0
            
                 
                 pulso = int((q1s/24) * (1970-980) + 980)
@@ -372,9 +396,10 @@ class Ui_MainWindow(object):
                 
         def mover_servos_semi(self, q1s, q2s, q3s):
             
-                distancia = self.sensor.distance
-                distancia2 = self.sensor2.distance
-                distancia3 = self.sensor3.distance·6
+#                 distancia = self.sensor.distance
+#                 distancia2 = self.sensor2.distance
+                #distancia3 = self.sensor3.distance
+                #print(distancia3)
                 
                 q3s = 180 - q3s
                 
@@ -396,26 +421,30 @@ class Ui_MainWindow(object):
                 elif  q3s == 180:
                     q3s = 175
                     
-                if distancia < 0.26 or distancia2 < 0.26:
-                    #print("lento")
-                    
-                    pulso = int((q1s/24) * (1970-980) + 980)
-                    self.pca.channels[4].duty_cycle = pulso
-                
-                    pulso2 = int((q2s/21) * (1970-980) + 980)
-                    self.pca.channels[15].duty_cycle = pulso2
-              
-                    pulso3 = int((q3s/27) * (1970-980) + 980)
-                    self.pca.channels[2].duty_cycle = pulso3
-                    
-                    time.sleep(0.5)
-                
-                
-                if distancia3 < 0.10 :
-                    while True:
-                        distancia = self.sensor.distance
-                        if distancia > 0.08 :
-                            return False
+#                 if distancia3 < 0.10:
+#                     
+#                     pulso = int((q1s/24) * (1970-980) + 980)
+#                     self.pca.channels[4].duty_cycle = pulso
+#                 
+#                     pulso2 = int((q2s/21) * (1970-980) + 980)
+#                     self.pca.channels[15].duty_cycle = pulso2
+#               
+#                     pulso3 = int((q3s/27) * (1970-980) + 980)
+#                     self.pca.channels[2].duty_cycle = pulso3
+#                     
+#                     time.sleep(0.5)
+#                 
+#                 
+#                 if distancia < 0.26 or distancia2 < 0.26 :
+#                     
+#                     pulso = int((q1s/24) * (1970-980) + 980)
+#                     self.pca.channels[4].duty_cycle = 0
+#                 
+#                     pulso2 = int((q2s/21) * (1970-980) + 980)
+#                     self.pca.channels[15].duty_cycle = 0
+#               
+#                     pulso3 = int((q3s/27) * (1970-980) + 980)
+#                     self.pca.channels[2].duty_cycle = 0
                     
                     
                 pulso = int((q1s/24) * (1970-980) + 980)
@@ -474,10 +503,11 @@ class Ui_MainWindow(object):
                 self.pushButton_go.setText(_translate("MainWindow", "GO!"))
                 self.label_11.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt; font-weight:600; color:#aa557f;\">MODO:AUTOMATICO</span></p></body></html>"))
                 self.pushButton_start.setText(_translate("MainWindow", "¡START!"))
-                self.label_13.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">Luis Alfonso Cardozo Sarmiento</span></p></body></html>"))
-                self.label_14.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">Cesar Mauricio Rocha</span></p></body></html>"))
-                self.label_15.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">Diego Alejandro Celemin</span></p></body></html>"))
-                self.label_16.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">Cristian Amaya</span></p></body></html>"))
+                self.label_13.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">Juan Sebastian Torres</span></p></body></html>"))
+                self.label_14.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">Steven Santana</span></p></body></html>"))
+                self.label_15.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">Juan Alberto Celemin</span></p></body></html>"))
+                self.label_16.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">Sergio Lopez</span></p></body></html>"))
+                self.label_17.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">Karen Mantilla</p></body></html>"))
       
 
 
@@ -489,3 +519,4 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+
